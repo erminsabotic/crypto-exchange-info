@@ -5,8 +5,11 @@ interface ExchangeInfoResponseV3 {
 
 interface ExchangeInfoSymbol {
     symbol: string
+    baseAsset: string
+    quoteAsset: string
 }
 
 export type {
-    ExchangeInfoResponseV3
+    ExchangeInfoResponseV3,
+    ExchangeInfoSymbol
 }

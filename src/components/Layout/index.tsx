@@ -1,6 +1,6 @@
 import {FC, ReactNode} from "react";
 import Header from "../Header";
-import {CssBaseline} from "@material-ui/core";
+import {CssBaseline} from "@mui/material";
 
 interface LayoutProps {
     children: ReactNode

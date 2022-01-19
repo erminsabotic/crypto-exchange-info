@@ -12,7 +12,7 @@ const App: FC<AppProps> = () => {
             <Layout>
                 <Routes>
                     <Route path="/" element={<Homepage />} />
-                    <Route path="/order-book" element={<OrderBook />} />
+                    <Route path="/order-book/:symbol" element={<OrderBook />} />
                 </Routes>
             </Layout>
         </BrowserRouter>

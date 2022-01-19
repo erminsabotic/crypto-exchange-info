@@ -1,21 +1,19 @@
 import React, {FC} from 'react';
 import {Link} from "react-router-dom";
-import {AppBar, Toolbar, Typography} from "@material-ui/core";
-import useStyles from "./styles";
+import {AppBar, Container, Toolbar, Typography} from "@mui/material";
 
 interface HeaderProps {}
 
 const Header: FC<HeaderProps> = () => {
-    const classes = useStyles()
     return (
         <>
             <AppBar position="relative">
                 <Toolbar>
                     <Typography variant="h6">Welcome</Typography>
-                    <div className={classes.linkContainer}>
-                        <Link to="" className={classes.link}>Homepage</Link>
-                        <Link to="/order-book" className={classes.link}>Order book</Link>
-                    </div>
+                    <Container sx={{ padding: "0 0 0 5px" }}>
+                        <Link to="">Homepage</Link>
+                        <Link to="/order-book">Order book</Link>
+                    </Container>
                 </Toolbar>
             </AppBar>
         </>
