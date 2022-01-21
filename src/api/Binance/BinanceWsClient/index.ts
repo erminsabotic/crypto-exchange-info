@@ -7,7 +7,7 @@ const subscribeToAggregatedTradeChannel: (
 
   const channelSettings = {
     method: "SUBSCRIBE",
-    params: [`jasmyeth@depth`],
+    params: [`${symbol}@depth`],
     id: 1,
   };
 

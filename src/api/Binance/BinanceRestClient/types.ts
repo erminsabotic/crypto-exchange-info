@@ -9,7 +9,14 @@ interface ExchangeInfoSymbol {
     quoteAsset: string
 }
 
+interface DepthResponseV1 {
+    lastUpdateId: number
+    asks: [string, string][]
+    bids: [string, string][]
+}
+
 export type {
+    DepthResponseV1,
     ExchangeInfoResponseV3,
     ExchangeInfoSymbol
 }
