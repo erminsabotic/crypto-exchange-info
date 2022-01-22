@@ -2,9 +2,9 @@ import React, { FC } from "react";
 import { Link } from "react-router-dom";
 import { AppBar, Container, Toolbar, Typography } from "@mui/material";
 
-interface HeaderProps {}
+interface IHeaderProps {}
 
-const Header: FC<HeaderProps> = () => {
+const Header: FC<IHeaderProps> = () => {
   return (
     <>
       <AppBar position="relative">

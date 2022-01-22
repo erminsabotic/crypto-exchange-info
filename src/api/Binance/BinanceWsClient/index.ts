@@ -1,7 +1,10 @@
 import { binanceWsClientV1 } from "../index";
-import { ChannelSettings } from "./types";
+import { IChannelSettings } from "./types";
+import DepthChannelError from "./Errors/DepthChannelError";
 
-const getDepthChannelSettings: (symbol: string) => ChannelSettings = (
+const STREAM: string = "STREAM";
+
+const getDepthChannelSettings: (symbol: string) => IChannelSettings = (
   symbol
 ) => ({
   method: "SUBSCRIBE",
@@ -13,14 +16,21 @@ const subscribeToDepthChannel: (
   symbol: string,
   onMessageCallback: (event: MessageEvent) => void
 ) => Promise<WebSocket> = async (symbol, onMessageCallback) => {
-  const ws = binanceWsClientV1("stream");
+  try {
+    const ws = binanceWsClientV1(STREAM);
 
-  ws.onopen = (event) => {
-    ws.send(JSON.stringify(getDepthChannelSettings(symbol)));
-  };
-  ws.onmessage = onMessageCallback;
+    ws.onopen = (event) => {
+      ws.send(JSON.stringify(getDepthChannelSettings(symbol)));
+    };
+    ws.onmessage = onMessageCallback;
 
-  return ws;
+    return ws;
+  } catch (e) {
+    const err = e as Error;
+    throw new DepthChannelError(
+      `BinanceWsClient.subscribeToDepthChannel: ${err.message}`
+    );
+  }
 };
 
 export { subscribeToDepthChannel };

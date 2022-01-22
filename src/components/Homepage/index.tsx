@@ -1,9 +1,10 @@
 import { FC } from "react";
+import Layout from "../Layout";
 
-interface HomepageProps {}
+interface IHomepageProps {}
 
-const Homepage: FC<HomepageProps> = () => {
-  return <>Homepage</>;
+const Homepage: FC<IHomepageProps> = () => {
+  return <Layout>Homepage</Layout>;
 };
 
 export default Homepage;

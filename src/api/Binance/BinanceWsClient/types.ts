@@ -1,9 +1,9 @@
-interface OrderStreamResponse {
-  data: Order;
+interface IOrderStreamResponse {
+  data: IOrder;
   stream: string;
 }
 
-interface Order {
+interface IOrder {
   E: number; // Event time
   U: number; // First update ID in event
   a: [string, string][]; // asks (sell) - array of arrays of length 2. Firs item is Price level to be updated second is quantity
@@ -13,10 +13,10 @@ interface Order {
   u: number;
 }
 
-interface ChannelSettings {
+interface IChannelSettings {
   method: string;
   params: string[];
   id: number;
 }
 
-export type { ChannelSettings, OrderStreamResponse, Order };
+export type { IChannelSettings, IOrderStreamResponse, IOrder };

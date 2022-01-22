@@ -13,3 +13,30 @@ export const PAGE_TITLE_SETTINGS = "Settings";
 export const FOOTER_HEIGHT = 30;
 export const HEADER_HEIGHT = 60;
 export const DRAWER_WIDTH = 250;
+
+//Order book constants
+export const BINANCE_REST_CLIENT_V3_BASE_URL = "https://api.binance.com/api/v3";
+export const BINANCE_REST_CLIENT_V1_BASE_URL = "https://www.binance.com/api/v1";
+export const BINANCE_WSS_CLIENT_V1_BASE_URL = "wss://stream.binance.com:9443";
+export const TRADING_SYMBOL_STATUS = "TRADING";
+export const SYMBOL_LABEL_SEPARATOR: string = "_";
+export const BUY_ORDER_TYPE: string = "buy";
+export const SELL_ORDER_TYPE: string = "sell";
+export const TABLE_LIMITS: { amount: number; displayText: string }[] = [
+  {
+    amount: 15,
+    displayText: "Display 15",
+  },
+  {
+    amount: 30,
+    displayText: "Display 30",
+  },
+  {
+    amount: 50,
+    displayText: "Display 50",
+  },
+  {
+    amount: 100,
+    displayText: "Display 100",
+  },
+];

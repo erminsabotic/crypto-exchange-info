@@ -1,24 +1,3 @@
-const BUY_ORDER_TYPE: string = "buy";
-const SELL_ORDER_TYPE: string = "sell";
-const TABLE_LIMITS: { amount: number; displayText: string }[] = [
-  {
-    amount: 15,
-    displayText: "Display 15",
-  },
-  {
-    amount: 30,
-    displayText: "Display 30",
-  },
-  {
-    amount: 50,
-    displayText: "Display 50",
-  },
-  {
-    amount: 100,
-    displayText: "Display 100",
-  },
-];
-
 const mergeOrderArrays: (
   currentOrderData: [string, string][],
   newOrderData: [string, string][],
@@ -45,10 +24,10 @@ const mergeOrderArrays: (
           currentOrderData[currentDataCounter][0]
         )
       )
-        mergedOrderData[mergedDataCounter++] = createOrderDataEntry(
+        mergedOrderData[mergedDataCounter++] = [
           currentOrderData[currentDataCounter][0],
-          currentOrderData[currentDataCounter][1]
-        );
+          currentOrderData[currentDataCounter][1],
+        ];
       currentDataCounter++;
     } else {
       if (
@@ -58,10 +37,10 @@ const mergeOrderArrays: (
           newOrderData[newDataCounter][0]
         )
       )
-        mergedOrderData[mergedDataCounter++] = createOrderDataEntry(
+        mergedOrderData[mergedDataCounter++] = [
           newOrderData[newDataCounter][0],
-          newOrderData[newDataCounter][1]
-        );
+          newOrderData[newDataCounter][1],
+        ];
       newDataCounter++;
     }
   }
@@ -74,10 +53,10 @@ const mergeOrderArrays: (
         currentOrderData[currentDataCounter][0]
       )
     )
-      mergedOrderData[mergedDataCounter++] = createOrderDataEntry(
+      mergedOrderData[mergedDataCounter++] = [
         currentOrderData[currentDataCounter][0],
-        currentOrderData[currentDataCounter][1]
-      );
+        currentOrderData[currentDataCounter][1],
+      ];
     currentDataCounter++;
   }
 
@@ -89,21 +68,14 @@ const mergeOrderArrays: (
         newOrderData[newDataCounter][0]
       )
     )
-      mergedOrderData[mergedDataCounter++] = createOrderDataEntry(
+      mergedOrderData[mergedDataCounter++] = [
         newOrderData[newDataCounter][0],
-        newOrderData[newDataCounter][1]
-      );
+        newOrderData[newDataCounter][1],
+      ];
     newDataCounter++;
   }
 
   return mergedOrderData.slice(0, limit);
-};
-
-const createOrderDataEntry: (
-  price: string,
-  amount: string
-) => [string, string] = (price, amount) => {
-  return [price, amount];
 };
 
 const shouldMergeByBuyOrSellType: (
@@ -137,9 +109,9 @@ const calculateDecimals: (
   }
 
   return [
-    { amount: zeroesCount + 1, displayText: `${zeroesCount + 1} decimals` },
-    { amount: zeroesCount + 2, displayText: `${zeroesCount + 2} decimals` },
-    { amount: zeroesCount + 3, displayText: `${zeroesCount + 3} decimals` },
+    { amount: ++zeroesCount, displayText: `${zeroesCount} decimals` },
+    { amount: ++zeroesCount, displayText: `${zeroesCount} decimals` },
+    { amount: ++zeroesCount, displayText: `${zeroesCount} decimals` },
   ];
 };
 
@@ -147,26 +119,23 @@ const formatOrdersArray: (
   orders: [string, string][],
   decimals: number
 ) => [string, string][] = (orders, decimals) => {
+  const seen: { [key: string]: boolean } = {};
+  console.log("DECIMALS", decimals);
   return orders
     .map((order) => {
       order[0] = parseFloat(order[0]).toFixed(decimals);
       return order;
     })
-    .filter((order, index, array) => {
-      const price: number = +parseFloat(order[0]);
-      const amount: number = +parseFloat(order[1]);
+    .filter((order) => {
+      let priceExists: boolean = true;
 
-      return (
-        price && amount && (index === 0 || order[0] !== array[index - 1][0])
-      );
+      if (!seen.hasOwnProperty(order[0])) {
+        priceExists = false;
+        seen[order[0]] = true;
+      }
+
+      return !priceExists;
     });
 };
 
-export {
-  BUY_ORDER_TYPE,
-  SELL_ORDER_TYPE,
-  TABLE_LIMITS,
-  mergeOrderArrays,
-  calculateDecimals,
-  formatOrdersArray,
-};
+export { mergeOrderArrays, calculateDecimals, formatOrdersArray };

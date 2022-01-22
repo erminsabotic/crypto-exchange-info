@@ -6,25 +6,31 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { ExchangeInfoSymbol } from "../../../api/Binance/BinanceRestClient/types";
+import { IExchangeInfoSymbol } from "../../../api/Binance/BinanceRestClient/types";
 import { getExchangeInfo } from "../../../api/Binance/BinanceRestClient";
 import { Autocomplete, TextField } from "@mui/material";
+import { stringCompareFunctionForDescendingOrder } from "../../../utils/sortCompares";
+import {
+  SYMBOL_LABEL_SEPARATOR,
+  TRADING_SYMBOL_STATUS,
+} from "../../../utils/constants";
+import { ISymbolItem } from "../index";
 
-interface SymbolSelectorProps {
-  symbol: string;
-  setSymbol: Dispatch<SetStateAction<string>>;
+interface ISymbolSelectorProps {
+  symbol: ISymbolItem;
+  setSymbol: Dispatch<SetStateAction<ISymbolItem | undefined>>;
 }
 
-interface AutocompleteItem {
+interface IAutocompleteItem {
   label: string;
 }
 
-const SymbolSelector: FC<SymbolSelectorProps> = ({ symbol, setSymbol }) => {
+const SymbolSelector: FC<ISymbolSelectorProps> = ({ symbol, setSymbol }) => {
   const [exchangeInfo, setExchangeInfo] = useState<
-    ExchangeInfoSymbol[] | undefined
+    IExchangeInfoSymbol[] | undefined
   >(undefined);
-  const [autocompleteDefaultValue] = useState<AutocompleteItem>({
-    label: symbol,
+  const [autocompleteDefaultValue] = useState<IAutocompleteItem>({
+    label: `${symbol.baseAsset}${SYMBOL_LABEL_SEPARATOR}${symbol.quoteAsset}`,
   });
 
   useEffect(() => {
@@ -32,14 +38,14 @@ const SymbolSelector: FC<SymbolSelectorProps> = ({ symbol, setSymbol }) => {
       try {
         const response = await getExchangeInfo();
         setExchangeInfo(
-          response.symbols.sort((current, next) => {
-            if (current.symbol < next.symbol) {
-              return -1;
-            }
-            if (current.symbol > next.symbol) {
-            }
-            return 0;
-          })
+          response.symbols
+            .filter(({ status }) => status === TRADING_SYMBOL_STATUS)
+            .sort((current, next) =>
+              stringCompareFunctionForDescendingOrder(
+                current.symbol,
+                next.symbol
+              )
+            )
         );
         console.log(response);
       } catch (e) {
@@ -54,10 +60,28 @@ const SymbolSelector: FC<SymbolSelectorProps> = ({ symbol, setSymbol }) => {
     event: SyntheticEvent<Element, Event>,
     newValue: { label: string } | null
   ) => {
-    setSymbol(newValue?.label as string);
+    if (newValue) {
+      const option = autocompleteOptions.find(
+        ({ label }) => label === newValue.label
+      );
+      if (option) {
+        setSymbol({
+          label: `${option.baseAsset}${SYMBOL_LABEL_SEPARATOR}${option.quoteAsset}`,
+          symbol: option.symbol,
+          baseAsset: option.baseAsset,
+          quoteAsset: option.quoteAsset,
+        });
+      }
+    }
   };
   const autocompleteOptions = exchangeInfo
-    ? exchangeInfo.map(({ symbol }) => ({ label: symbol }))
+    ? exchangeInfo.map(({ baseAsset, quoteAsset, status, symbol }) => ({
+        label: `${baseAsset}${SYMBOL_LABEL_SEPARATOR}${quoteAsset}`,
+        symbol,
+        quoteAsset,
+        baseAsset,
+        status,
+      }))
     : [];
 
   return (

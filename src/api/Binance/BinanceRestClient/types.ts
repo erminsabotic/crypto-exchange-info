@@ -1,18 +1,19 @@
 //Mapping only fields that we will use
-interface ExchangeInfoResponseV3 {
-  symbols: ExchangeInfoSymbol[];
+interface IExchangeInfoResponseV3 {
+  symbols: IExchangeInfoSymbol[];
 }
 
-interface ExchangeInfoSymbol {
+interface IExchangeInfoSymbol {
   symbol: string;
+  status: string;
   baseAsset: string;
   quoteAsset: string;
 }
 
-interface DepthResponseV1 {
+interface IDepthResponseV1 {
   lastUpdateId: number;
   asks: [string, string][];
   bids: [string, string][];
 }
 
-export type { DepthResponseV1, ExchangeInfoResponseV3, ExchangeInfoSymbol };
+export type { IDepthResponseV1, IExchangeInfoResponseV3, IExchangeInfoSymbol };

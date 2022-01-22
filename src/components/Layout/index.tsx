@@ -2,11 +2,11 @@ import { FC, ReactNode } from "react";
 import Header from "../Header";
 import { CssBaseline } from "@mui/material";
 
-interface LayoutProps {
+interface ILayoutProps {
   children: ReactNode;
 }
 
-const Layout: FC<LayoutProps> = ({ children }) => {
+const Layout: FC<ILayoutProps> = ({ children }) => {
   return (
     <>
       <CssBaseline />
