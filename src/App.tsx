@@ -7,8 +7,9 @@ interface IAppProps {}
 
 const App: FC<IAppProps> = () => {
   //TODO: MOVE ROUTES TO DIFFERENT FILE
+    //TODO: ADD 404 PAGE
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/order-book/:symbol" element={<OrderBook />} />

@@ -12,7 +12,7 @@ const Header: FC<IHeaderProps> = () => {
           <Typography variant="h6">Welcome</Typography>
           <Container sx={{ padding: "0 0 0 5px" }}>
             <Link to="">Homepage</Link>
-            <Link to="/order-book/BTCUSDT">Order book</Link>
+            <Link to="/order-book/BTC_USDT">Order book</Link>
           </Container>
         </Toolbar>
       </AppBar>
