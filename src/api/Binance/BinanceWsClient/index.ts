@@ -2,7 +2,7 @@ import { binanceWsClientV1 } from "../index";
 import { IChannelSettings } from "./types";
 import DepthChannelError from "./Errors/DepthChannelError";
 
-const STREAM: string = "STREAM";
+const STREAM: string = "stream";
 
 const getDepthChannelSettings: (symbol: string) => IChannelSettings = (
   symbol

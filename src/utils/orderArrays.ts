@@ -128,13 +128,13 @@ const formatOrdersArray: (
     })
     .filter((order) => {
       let priceExists: boolean = true;
-
+      const amount = parseFloat(order[1])
       if (!seen.hasOwnProperty(order[0])) {
         priceExists = false;
         seen[order[0]] = true;
       }
 
-      return !priceExists;
+      return amount && !priceExists;
     });
 };
 
