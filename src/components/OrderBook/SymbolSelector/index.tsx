@@ -24,7 +24,8 @@ interface ISymbolSelectorProps {
 interface IAutocompleteItem {
   label: string;
 }
-
+//TODO: ADD BETTER ERROR CASE HANDLING SCENARIOS
+//TODO: RENAME SYMBOL TO TRADING PAIR
 const SymbolSelector: FC<ISymbolSelectorProps> = ({ symbol, setSymbol }) => {
   const [exchangeInfo, setExchangeInfo] = useState<
     IExchangeInfoSymbol[] | undefined
