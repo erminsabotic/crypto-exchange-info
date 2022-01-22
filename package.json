@@ -1,5 +1,6 @@
 {
   "name": "aurox-challenge-typescript",
+  "homepage": "https://erminsabotic.github.io/crypto-exchange-info/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
