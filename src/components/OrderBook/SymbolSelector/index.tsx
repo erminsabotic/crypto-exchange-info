@@ -16,15 +16,16 @@ interface SymbolSelectorProps {
 }
 
 interface AutocompleteItem {
-  label: string
+  label: string;
 }
 
 const SymbolSelector: FC<SymbolSelectorProps> = ({ symbol, setSymbol }) => {
   const [exchangeInfo, setExchangeInfo] = useState<
     ExchangeInfoSymbol[] | undefined
   >(undefined);
-  const [autocompleteDefaultValue] =
-    useState<AutocompleteItem>({label: symbol});
+  const [autocompleteDefaultValue] = useState<AutocompleteItem>({
+    label: symbol,
+  });
 
   useEffect(() => {
     const fetchData = async () => {

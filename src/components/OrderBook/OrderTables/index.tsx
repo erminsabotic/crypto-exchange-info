@@ -3,7 +3,7 @@ import {
   Order,
   OrderStreamResponse,
 } from "../../../api/Binance/BinanceWsClient/types";
-import { subscribeToAggregatedTradeChannel } from "../../../api/Binance/BinanceWsClient";
+import { subscribeToDepthChannel } from "../../../api/Binance/BinanceWsClient";
 import {
   FormControl,
   FormControlLabel,
@@ -19,7 +19,6 @@ import {
 import OrderTable from "../OrderTable";
 import ReactDOM from "react-dom";
 import {
-  BUY_AND_SELL_ORDER_TABLE,
   BUY_ORDER_TYPE,
   calculateDecimals,
   formatOrdersArray,
@@ -34,9 +33,8 @@ interface OrderTablesProps {
 }
 
 const OrderTables: FC<OrderTablesProps> = ({ symbol }) => {
-  const [buyAndSellTablesSwitch, setBuyAndSellTablesSwitch] = useState<string>(
-    BUY_AND_SELL_ORDER_TABLE
-  );
+  const [buyAndSellTablesSwitch, setBuyAndSellTablesSwitch] =
+    useState<string>("");
   const [tableLimit, _setTableLimit] = useState<number>(TABLE_LIMITS[0].amount);
   const [decimals, _setDecimals] = useState<number>(0);
   const [buyTableData, _setBuyTableData] = useState<[string, string][]>([]);
@@ -79,7 +77,7 @@ const OrderTables: FC<OrderTablesProps> = ({ symbol }) => {
     );
     const mergeBuy = mergeOrderArrays(
       buyTableDataRef.current,
-      formatOrdersArray(b,  decimalsRef.current),
+      formatOrdersArray(b, decimalsRef.current),
       BUY_ORDER_TYPE,
       tableLimitRef.current
     );
@@ -96,13 +94,25 @@ const OrderTables: FC<OrderTablesProps> = ({ symbol }) => {
     });
   };
 
+  const depthOnMessageEvent: (event: MessageEvent) => void = (
+    event: MessageEvent
+  ) => {
+    const json: OrderStreamResponse = JSON.parse(event.data);
+    try {
+      if (json.data) {
+        console.log(json.data);
+        sortBuyAndSellOrders(json.data);
+      }
+    } catch (err) {
+      console.log(err);
+      // whatever you wish  to do with the err
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const initialData = await getDepth(symbol, 1000);
-
-        console.log(initialData)
-
         const decimalsArray = calculateDecimals(initialData.asks[0][0]);
 
         ReactDOM.unstable_batchedUpdates(() => {
@@ -117,29 +127,14 @@ const OrderTables: FC<OrderTablesProps> = ({ symbol }) => {
           initialData.asks,
           decimalsArray[2].amount
         );
-        await updateBuyAndSellOrders(initialBuyOrders, initialSellOrders);
-
-        const ws = await subscribeToAggregatedTradeChannel(
-          symbol.toLowerCase()
+        await updateBuyAndSellOrders(
+          initialBuyOrders.slice(0, tableLimitRef.current),
+          initialSellOrders.slice(0, tableLimitRef.current)
         );
-        let messageCount = 0;
-        ws.onmessage = (event: MessageEvent) => {
-          const json: OrderStreamResponse = JSON.parse(event.data);
-          try {
-            if (json.data) {
-              console.log(json.data);
-              sortBuyAndSellOrders(json.data);
-              messageCount++;
-            }
-            // if(messageCount > 10){
-            //   ws.close()
-            //   console.log("closed")
-            // }
-          } catch (err) {
-            console.log(err);
-            // whatever you wish  to do with the err
-          }
-        };
+        await subscribeToDepthChannel(
+          symbol.toLowerCase(),
+          depthOnMessageEvent
+        );
       } catch (e) {
         console.log("error occurred");
       }
@@ -156,7 +151,7 @@ const OrderTables: FC<OrderTablesProps> = ({ symbol }) => {
     return <OrderTable type={SELL_ORDER_TYPE} data={sellTableData} />;
   };
 
-  const buyAndSellTable = () => {
+  const buyAndSellTables = () => {
     return (
       <Grid container>
         <Grid item xs={5}>
@@ -168,6 +163,17 @@ const OrderTables: FC<OrderTablesProps> = ({ symbol }) => {
         </Grid>
       </Grid>
     );
+  };
+
+  const displayOrderTables: () => JSX.Element = () => {
+    switch (buyAndSellTablesSwitch) {
+      case BUY_ORDER_TYPE:
+        return buyTable();
+      case SELL_ORDER_TYPE:
+        return sellTable();
+      default:
+        return buyAndSellTables();
+    }
   };
 
   const handleChange = (
@@ -182,16 +188,12 @@ const OrderTables: FC<OrderTablesProps> = ({ symbol }) => {
   };
 
   const handleDecimalsChange = (event: SelectChangeEvent<number>) => {
-    const decimals: number = +event.target.value
+    const decimals: number = +event.target.value;
     setDecimals(decimals);
-    const buyData = formatOrdersArray(buyTableDataRef.current, decimals)
-    const sellData = formatOrdersArray(sellTableDataRef.current, decimals)
-    console.log(buyData, sellData)
-    updateBuyAndSellOrders(buyData, sellData)
+    const buyData = formatOrdersArray(buyTableDataRef.current, decimals);
+    const sellData = formatOrdersArray(sellTableDataRef.current, decimals);
+    updateBuyAndSellOrders(buyData, sellData);
   };
-
-  console.log("DECIMALS", decimals);
-  console.log("DECIMALS ARRAY", decimalsArray);
 
   return (
     <>
@@ -218,7 +220,7 @@ const OrderTables: FC<OrderTablesProps> = ({ symbol }) => {
             label="Sell"
           />
           <FormControlLabel
-            value={BUY_AND_SELL_ORDER_TABLE}
+            value={""}
             control={<Radio />}
             label="Buy and Sell"
           />
@@ -264,12 +266,7 @@ const OrderTables: FC<OrderTablesProps> = ({ symbol }) => {
           </Select>
         </FormControl>
       ) : null}
-
-      {buyAndSellTablesSwitch === BUY_ORDER_TYPE ? buyTable() : null}
-      {buyAndSellTablesSwitch === SELL_ORDER_TYPE ? sellTable() : null}
-      {buyAndSellTablesSwitch === BUY_AND_SELL_ORDER_TABLE
-        ? buyAndSellTable()
-        : null}
+      {displayOrderTables()}
     </>
   );
 };

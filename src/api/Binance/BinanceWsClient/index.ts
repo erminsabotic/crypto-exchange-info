@@ -1,21 +1,26 @@
 import { binanceWsClientV1 } from "../index";
+import { ChannelSettings } from "./types";
 
-const subscribeToAggregatedTradeChannel: (
-  symbol: string
-) => WebSocket = (symbol: string) => {
+const getDepthChannelSettings: (symbol: string) => ChannelSettings = (
+  symbol
+) => ({
+  method: "SUBSCRIBE",
+  params: [`${symbol}@depth`],
+  id: 1,
+});
+
+const subscribeToDepthChannel: (
+  symbol: string,
+  onMessageCallback: (event: MessageEvent) => void
+) => Promise<WebSocket> = async (symbol, onMessageCallback) => {
   const ws = binanceWsClientV1("stream");
 
-  const channelSettings = {
-    method: "SUBSCRIBE",
-    params: [`${symbol}@depth`],
-    id: 1,
-  };
-
   ws.onopen = (event) => {
-    ws.send(JSON.stringify(channelSettings));
+    ws.send(JSON.stringify(getDepthChannelSettings(symbol)));
   };
+  ws.onmessage = onMessageCallback;
 
-  return ws
+  return ws;
 };
 
-export { subscribeToAggregatedTradeChannel };
+export { subscribeToDepthChannel };

@@ -1,6 +1,5 @@
 const BUY_ORDER_TYPE: string = "buy";
 const SELL_ORDER_TYPE: string = "sell";
-const BUY_AND_SELL_ORDER_TABLE: string = "buy-and-sell";
 const TABLE_LIMITS: { amount: number; displayText: string }[] = [
   {
     amount: 15,
@@ -26,62 +25,85 @@ const mergeOrderArrays: (
   type: string,
   limit: number
 ) => [string, string][] = (currentOrderData, newOrderData, type, limit) => {
-  let [i, j, k] = [0, 0, 0];
+  let [currentDataCounter, newDataCounter, mergedDataCounter] = [0, 0, 0];
   const mergedOrderData: [string, string][] = [];
 
-  while (i < currentOrderData.length && j < newOrderData.length) {
-    const currentPrice: number = +parseFloat(currentOrderData[i][0]);
-    const newPrice: number = +parseFloat(newOrderData[j][0]);
+  while (
+    currentDataCounter < currentOrderData.length &&
+    newDataCounter < newOrderData.length
+  ) {
+    const currentPrice: number = +parseFloat(
+      currentOrderData[currentDataCounter][0]
+    );
+    const newPrice: number = +parseFloat(newOrderData[newDataCounter][0]);
 
     if (shouldMergeByBuyOrSellType(type, currentPrice, newPrice)) {
       if (
-        mergedOrderData.length === 0 ||
-        mergedOrderData[k - 1][0] !== currentOrderData[i][0]
-      ) {
-        mergedOrderData[k] = [currentOrderData[i][0], currentOrderData[i][1]];
-        k++;
-      }
-      i++;
+        shouldAddToMergedArray(
+          mergedOrderData,
+          mergedDataCounter,
+          currentOrderData[currentDataCounter][0]
+        )
+      )
+        mergedOrderData[mergedDataCounter++] = createOrderDataEntry(
+          currentOrderData[currentDataCounter][0],
+          currentOrderData[currentDataCounter][1]
+        );
+      currentDataCounter++;
     } else {
-      const newAmount: number = +parseFloat(newOrderData[j][1]);
       if (
-        newPrice &&
-        newAmount &&
-        (mergedOrderData.length === 0 ||
-          mergedOrderData[k - 1][0] !== newOrderData[j][0])
-      ) {
-        mergedOrderData[k++] = [newOrderData[j][0], newOrderData[j][1]];
-      }
-      j++;
+        shouldAddToMergedArray(
+          mergedOrderData,
+          mergedDataCounter,
+          newOrderData[newDataCounter][0]
+        )
+      )
+        mergedOrderData[mergedDataCounter++] = createOrderDataEntry(
+          newOrderData[newDataCounter][0],
+          newOrderData[newDataCounter][1]
+        );
+      newDataCounter++;
     }
   }
 
-  while (i < currentOrderData.length) {
+  while (currentDataCounter < currentOrderData.length) {
     if (
-      mergedOrderData.length === 0 ||
-      mergedOrderData[k - 1][0] !== currentOrderData[i][0]
-    ) {
-      mergedOrderData[k++] = [currentOrderData[i][0], currentOrderData[i][1]];
-    }
-    i++;
+      shouldAddToMergedArray(
+        mergedOrderData,
+        mergedDataCounter,
+        currentOrderData[currentDataCounter][0]
+      )
+    )
+      mergedOrderData[mergedDataCounter++] = createOrderDataEntry(
+        currentOrderData[currentDataCounter][0],
+        currentOrderData[currentDataCounter][1]
+      );
+    currentDataCounter++;
   }
 
-  while (j < newOrderData.length) {
-    const newPrice: number = +parseFloat(newOrderData[j][0]);
-    const newAmount: number = +parseFloat(newOrderData[j][1]);
-
+  while (newDataCounter < newOrderData.length) {
     if (
-      newPrice &&
-      newAmount &&
-      (mergedOrderData.length === 0 ||
-        mergedOrderData[k - 1][0] !== newOrderData[j][0])
-    ) {
-      mergedOrderData[k++] = [newOrderData[j][0], newOrderData[j][1]];
-    }
-    j++;
+      shouldAddToMergedArray(
+        mergedOrderData,
+        mergedDataCounter,
+        newOrderData[newDataCounter][0]
+      )
+    )
+      mergedOrderData[mergedDataCounter++] = createOrderDataEntry(
+        newOrderData[newDataCounter][0],
+        newOrderData[newDataCounter][1]
+      );
+    newDataCounter++;
   }
 
   return mergedOrderData.slice(0, limit);
+};
+
+const createOrderDataEntry: (
+  price: string,
+  amount: string
+) => [string, string] = (price, amount) => {
+  return [price, amount];
 };
 
 const shouldMergeByBuyOrSellType: (
@@ -96,11 +118,18 @@ const shouldMergeByBuyOrSellType: (
   return currentPrice < newPrice;
 };
 
+const shouldAddToMergedArray: (
+  mergedArray: [string, string][],
+  mergedArrayCounter: number,
+  newEntryPrice: string
+) => boolean = (mergedArray, mergedArrayCounter, newEntryPrice) =>
+  mergedArray.length === 0 ||
+  mergedArray[mergedArrayCounter - 1][0] !== newEntryPrice;
+
 const calculateDecimals: (
   price: string
 ) => { amount: number; displayText: string }[] = (price) => {
   const decimalPart = price.split(".")[1];
-  console.log("decimalPart", decimalPart);
   let zeroesCount = 0;
   for (let i = 0; i < decimalPart.length; i++) {
     if (decimalPart.charAt(i) !== "0") break;
@@ -118,22 +147,24 @@ const formatOrdersArray: (
   orders: [string, string][],
   decimals: number
 ) => [string, string][] = (orders, decimals) => {
-  //TODO move zero check here and refactor merge function
   return orders
     .map((order) => {
       order[0] = parseFloat(order[0]).toFixed(decimals);
-      console.log("ORDER", order[0], decimals)
       return order;
     })
     .filter((order, index, array) => {
-      return index === 0 || order[0] !== array[index - 1][0];
+      const price: number = +parseFloat(order[0]);
+      const amount: number = +parseFloat(order[1]);
+
+      return (
+        price && amount && (index === 0 || order[0] !== array[index - 1][0])
+      );
     });
 };
 
 export {
   BUY_ORDER_TYPE,
   SELL_ORDER_TYPE,
-  BUY_AND_SELL_ORDER_TABLE,
   TABLE_LIMITS,
   mergeOrderArrays,
   calculateDecimals,

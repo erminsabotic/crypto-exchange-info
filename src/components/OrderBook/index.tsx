@@ -1,10 +1,4 @@
 import { FC, useEffect, useState } from "react";
-import { ExchangeInfoResponseV3 } from "../../api/Binance/BinanceRestClient/types";
-import { subscribeToAggregatedTradeChannel } from "../../api/Binance/BinanceWsClient";
-import {
-  Order,
-  OrderStreamResponse,
-} from "../../api/Binance/BinanceWsClient/types";
 import SymbolSelector from "./SymbolSelector";
 import { Container, Grid, Typography } from "@mui/material";
 import { useParams, Navigate } from "react-router-dom";
@@ -17,8 +11,6 @@ const OrderBook: FC<OrderBookProps> = () => {
   const [symbol, setSymbol] = useState<string>(symbolInPath as string);
   const [refresh, setRefresh] = useState<boolean>(false);
 
-
-
   useEffect(() => {
     setRefresh(symbol !== symbolInPath);
   }, [symbol, symbolInPath]);
@@ -26,7 +18,7 @@ const OrderBook: FC<OrderBookProps> = () => {
   return (
     <>
       {refresh ? (
-          //TODO: move to Symbol selector
+        //TODO: move to Symbol selector
         <Navigate to={`/order-book/${symbol}`} />
       ) : (
         <Container sx={{ padding: "8 0 6 0" }} maxWidth="md">

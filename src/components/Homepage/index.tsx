@@ -1,13 +1,9 @@
-import {FC} from "react";
+import { FC } from "react";
 
 interface HomepageProps {}
 
 const Homepage: FC<HomepageProps> = () => {
-    return (
-        <>
-            Homepage
-        </>
-    )
-}
+  return <>Homepage</>;
+};
 
-export default Homepage
+export default Homepage;

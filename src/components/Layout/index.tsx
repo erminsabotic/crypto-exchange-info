@@ -1,21 +1,19 @@
-import {FC, ReactNode} from "react";
+import { FC, ReactNode } from "react";
 import Header from "../Header";
-import {CssBaseline} from "@mui/material";
+import { CssBaseline } from "@mui/material";
 
 interface LayoutProps {
-    children: ReactNode
+  children: ReactNode;
 }
 
 const Layout: FC<LayoutProps> = ({ children }) => {
-    return (
-        <>
-            <CssBaseline />
-            <Header/>
-            <main>
-                {children}
-            </main>
-        </>
-    )
-}
+  return (
+    <>
+      <CssBaseline />
+      <Header />
+      <main>{children}</main>
+    </>
+  );
+};
 
-export default Layout
+export default Layout;

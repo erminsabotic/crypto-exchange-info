@@ -11,13 +11,13 @@ import {
 
 interface OrderTableProps {
   data: [string, string][] | undefined;
-  type: string
+  type: string;
 }
 
 const OrderTable: FC<OrderTableProps> = ({ data, type }) => {
-    const buyOrSellColor: () => string = () => {
-        return type === 'sell' ? '#ffcccb' : '#90ee90';
-    }
+  const buyOrSellColor: () => string = () => {
+    return type === "sell" ? "#ffcccb" : "#90ee90";
+  };
   return (
     <>
       <TableContainer component={Paper}>
@@ -33,7 +33,10 @@ const OrderTable: FC<OrderTableProps> = ({ data, type }) => {
               ? data.map((row, index) => (
                   <TableRow
                     key={index}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 }, backgroundColor: buyOrSellColor()  }}
+                    sx={{
+                      "&:last-child td, &:last-child th": { border: 0 },
+                      backgroundColor: buyOrSellColor(),
+                    }}
                   >
                     <TableCell component="th" scope="row">
                       {row[0]}
