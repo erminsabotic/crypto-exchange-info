@@ -1,6 +1,6 @@
 import {
   TRADING_PAIR_LABEL_SEPARATOR,
-  TRADING_SYMBOL_STATUS,
+  TRADING_PAIR_STATUS,
 } from "./constants";
 import { IExchangeInfoResponseV3 } from "../api/Binance/BinanceRestClient/types";
 import { stringCompareFunctionForDescendingOrder } from "./sortCompares";
@@ -19,7 +19,7 @@ const createTradingPairFromTradingPairLabel: (
 ) => ITradingPair = (tradingPairInPath) => {
   if (!isValidTradingPairLabel(tradingPairInPath)) {
     throw new InvalidTradingPairInPathError(
-      "symbols.createTraidingPairItemFromTradingPairInPath: Invalid trading pair in path"
+      "tradingPairs.createTraidingPairItemFromTradingPairInPath: Invalid trading pair in path"
     );
   }
 
@@ -45,7 +45,7 @@ const findTradingPairInTradingPairs: (
 
   if (!pair) {
     throw new TradingPairNotFound(
-      "symbols.findTradingPairInTradingPairs: Trading pair does not exist in trading pairs"
+      "tradingPairs.findTradingPairInTradingPairs: Trading pair does not exist in trading pairs"
     );
   }
 
@@ -56,14 +56,14 @@ const formatExchangeInfoResponse: (
   response: IExchangeInfoResponseV3
 ) => ITradingPair[] = ({ symbols }) => {
   return symbols
-    .filter(({ status }) => status === TRADING_SYMBOL_STATUS)
+    .filter(({ status }) => status === TRADING_PAIR_STATUS)
     .sort((current, next) =>
       stringCompareFunctionForDescendingOrder(current.symbol, next.symbol)
     )
     .map(({ symbol, baseAsset, quoteAsset }) => {
       return {
         label: `${baseAsset}${TRADING_PAIR_LABEL_SEPARATOR}${quoteAsset}`,
-        symbol: `${baseAsset}${quoteAsset}`,
+        symbol: symbol,
         baseAsset: baseAsset,
         quoteAsset: quoteAsset,
       };

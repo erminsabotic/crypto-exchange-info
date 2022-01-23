@@ -98,7 +98,7 @@ const TradingPair: FC<ITradingPairSelectorProps> = ({
           getOptionLabel={(option) => option.label}
           defaultValue={autocompleteDefaultValue}
           sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Symbol" />}
+          renderInput={(params) => <TextField {...params} label="Trading pair" />}
           onChange={handleChange}
         />
       ) : null}
