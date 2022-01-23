@@ -66,7 +66,9 @@ const OrderTable: FC<IOrderTableProps> = ({
           <TableHead>
             <TableRow>
               <TableCell>Price ({tradingPair.quoteAsset})</TableCell>
-              <TableCell align="right">Amount ({tradingPair.baseAsset})</TableCell>
+              <TableCell align="right">
+                Amount ({tradingPair.baseAsset})
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -1,9 +1,9 @@
 import { FC, useState } from "react";
 import { Container, Grid, Typography } from "@mui/material";
-import {useParams, useNavigate, Navigate} from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import OrderTables from "./OrderTables";
 import Layout from "../Layout";
-import TradingPairSelector, {ITradingPair} from "./TradingPairSelector";
+import TradingPairSelector, { ITradingPair } from "./TradingPairSelector";
 
 interface IOrderBookProps {}
 

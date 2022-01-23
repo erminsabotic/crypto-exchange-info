@@ -9,7 +9,9 @@ import React, {
 import { getExchangeInfo } from "../../../api/Binance/BinanceRestClient";
 import { Autocomplete, TextField } from "@mui/material";
 import {
-  createTradingPairFromTradingPairLabel, findTradingPairInTradingPairs, formatExchangeInfoResponse
+  createTradingPairFromTradingPairLabel,
+  findTradingPairInTradingPairs,
+  formatExchangeInfoResponse,
 } from "../../../utils/tradingPairs";
 import { useNavigate } from "react-router-dom";
 
@@ -46,8 +48,7 @@ const TradingPair: FC<ITradingPairSelectorProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const pair =
-          createTradingPairFromTradingPairLabel(tradingPairLabel);
+        const pair = createTradingPairFromTradingPairLabel(tradingPairLabel);
         const tradingPairs: ITradingPair[] = formatExchangeInfoResponse(
           await getExchangeInfo()
         );
@@ -98,7 +99,9 @@ const TradingPair: FC<ITradingPairSelectorProps> = ({
           getOptionLabel={(option) => option.label}
           defaultValue={autocompleteDefaultValue}
           sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Trading pair" />}
+          renderInput={(params) => (
+            <TextField {...params} label="Trading pair" />
+          )}
           onChange={handleChange}
         />
       ) : null}

@@ -14,7 +14,7 @@ import {
   TABLE_LIMITS,
 } from "../../../utils/constants";
 import { calculateDecimals } from "../../../utils/orderArrays";
-import {ITradingPair} from "../TradingPairSelector";
+import { ITradingPair } from "../TradingPairSelector";
 
 interface IOrderTablesProps {
   tradingPair: ITradingPair;
@@ -34,9 +34,9 @@ const INITIAL_DEPTH_DATA_LIMIT = 1000;
 const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
   const [buyAndSellTablesSwitch, setBuyAndSellTablesSwitch] =
     useState<string>("");
-  const [webSocket, setWebSocket] = useState<WebSocket>();
-  const [tableLimit, _setTableLimit] = useState<number>(TABLE_LIMITS[0].amount);
-  const [decimals, _setDecimals] = useState<number>(0);
+  const [webSocket, _setWebSocket] = useState<WebSocket>();
+  const [tableLimit, setTableLimit] = useState<number>(TABLE_LIMITS[0].amount);
+  const [decimals, setDecimals] = useState<number>(0);
   const [tablesData, _setTablesData] = useState<ITablesData>({
     buys: [],
     sells: [],
@@ -44,28 +44,22 @@ const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
   const [decimalOptions, _setDecimalOptions] = useState<IDecimalOption[]>([]);
 
   const tablesDataRef = useRef(tablesData);
-  const tableLimitRef = useRef(tableLimit);
-  const decimalsRef = useRef(decimals);
   const decimalOptionsRef = useRef(decimalOptions);
+  const webSocketRef = useRef(webSocket);
 
   const setTablesData = (data: ITablesData) => {
     tablesDataRef.current = data;
     _setTablesData(data);
   };
 
-  const setTableLimit = (data: number) => {
-    tableLimitRef.current = data;
-    _setTableLimit(data);
-  };
-
-  const setDecimals = (data: number) => {
-    decimalsRef.current = data;
-    _setDecimals(data);
-  };
-
   const setDecimalOptions = (data: IDecimalOption[]) => {
     decimalOptionsRef.current = data;
     _setDecimalOptions(data);
+  };
+
+  const setWebSocket = (data: WebSocket) => {
+    webSocketRef.current = data;
+    _setWebSocket(data);
   };
 
   const updateBuyAndSellOrderData: (
@@ -94,23 +88,11 @@ const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
     }
   };
 
-  const resetStateToDefaultValues: () => void = () => {
-    setTablesData({ buys: [], sells: [] });
-    setDecimalOptions([]);
-    setDecimals(0);
-    setTableLimit(TABLE_LIMITS[0].amount);
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (webSocket) {
-          webSocket.close();
-          resetStateToDefaultValues();
-        }
-
         const initialData = await getDepth(
-            tradingPair.symbol,
+          tradingPair.symbol,
           INITIAL_DEPTH_DATA_LIMIT
         );
         const decimalsArray = calculateDecimals(initialData.asks[0][0]);
@@ -121,7 +103,7 @@ const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
         });
         await updateBuyAndSellOrderData(initialData.bids, initialData.asks);
         const ws = await subscribeToDepthChannel(
-            tradingPair.symbol.toLowerCase(),
+          tradingPair.symbol.toLowerCase(),
           depthChannelOnMessageEvent
         );
         setWebSocket(ws);
@@ -131,6 +113,7 @@ const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
     };
 
     fetchData();
+    return () => webSocketRef.current?.close();
   }, [tradingPair]);
 
   const buyTable = () => {
@@ -173,7 +156,11 @@ const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
         >
           {buyTable()}
         </Grid>
-        <Grid item xs={2} style={{ display: shouldDisplayBuyTable ? "block" : "none" }}/>
+        <Grid
+          item
+          xs={2}
+          style={{ display: shouldDisplayBuyTable ? "block" : "none" }}
+        />
         <Grid
           item
           md={5}

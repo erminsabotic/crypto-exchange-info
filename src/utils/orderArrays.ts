@@ -3,7 +3,12 @@ const mergeOrderArrays: (
   newOrderData: [string, string][],
   type: string,
   limit?: number
-) => [string, string][] = (currentOrderData, newOrderData, type, limit= 100) => {
+) => [string, string][] = (
+  currentOrderData,
+  newOrderData,
+  type,
+  limit = 100
+) => {
   let [currentDataCounter, newDataCounter, mergedDataCounter] = [0, 0, 0];
   const mergedOrderData: [string, string][] = [];
 
@@ -108,7 +113,7 @@ const calculateDecimals: (
     zeroesCount++;
   }
 
-  if(zeroesCount === decimalPart.length) zeroesCount = -1;
+  if (zeroesCount === decimalPart.length) zeroesCount = -1;
 
   return [
     { amount: ++zeroesCount, displayText: `${zeroesCount} decimals` },
@@ -124,15 +129,15 @@ const formatOrdersArray: (
   const seen: { [key: string]: boolean } = {};
   return orders
     .map((order) => {
-      let price: string = order[0]
-      if(decimals) {
+      let price: string = order[0];
+      if (decimals) {
         price = parseFloat(price).toFixed(decimals);
       }
       return [price, order[1]] as [string, string];
     })
     .filter((order) => {
       let priceExists: boolean = true;
-      const amount = parseFloat(order[1])
+      const amount = parseFloat(order[1]);
       if (!seen.hasOwnProperty(order[0])) {
         priceExists = false;
         seen[order[0]] = true;

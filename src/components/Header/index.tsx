@@ -1,18 +1,48 @@
 import React, { FC } from "react";
-import { Link } from "react-router-dom";
-import { AppBar, Container, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Container,
+  Toolbar,
+  Typography,
+  Link,
+  ThemeProvider,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { linkStyle } from "./style";
+import { dark } from "@mui/material/styles/createPalette";
 
 interface IHeaderProps {}
 
 const Header: FC<IHeaderProps> = () => {
+  const navigate = useNavigate();
   return (
     <>
-      <AppBar position="relative">
-        <Toolbar>
+      <AppBar position="relative" color="primary">
+        <Toolbar color={"secondary.light"}>
           <Typography variant="h6">Welcome</Typography>
           <Container sx={{ padding: "0 0 0 5px" }}>
-            <Link to="">Homepage</Link>
-            <Link to="/order-book/BTC_USDT">Order book</Link>
+            <Link
+              sx={{ ...linkStyle }}
+              component="button"
+              variant="body1"
+              underline="hover"
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              Homepage
+            </Link>
+            <Link
+              sx={{ ...linkStyle }}
+              component="button"
+              variant="body1"
+              underline="hover"
+              onClick={() => {
+                navigate("/order-book/BTC_USDT");
+              }}
+            >
+              Order book
+            </Link>
           </Container>
         </Toolbar>
       </AppBar>

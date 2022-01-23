@@ -1,7 +1,4 @@
-import {
-  TRADING_PAIR_LABEL_SEPARATOR,
-  TRADING_PAIR_STATUS,
-} from "./constants";
+import { TRADING_PAIR_LABEL_SEPARATOR, TRADING_PAIR_STATUS } from "./constants";
 import { IExchangeInfoResponseV3 } from "../api/Binance/BinanceRestClient/types";
 import { stringCompareFunctionForDescendingOrder } from "./sortCompares";
 import InvalidTradingPairInPathError from "../errors/InvalidTradingPairInPathError";
