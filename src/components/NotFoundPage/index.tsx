@@ -2,7 +2,7 @@ import { FC } from "react";
 import Layout from "../Layout";
 import { Typography } from "@mui/material";
 
-const NotFound: FC = () => {
+const NotFoundPage: FC = () => {
   return (
     <Layout>
       <Typography sx={{ pt: 8 }} variant="h1" align="center">
@@ -12,4 +12,4 @@ const NotFound: FC = () => {
   );
 };
 
-export default NotFound;
+export default NotFoundPage;

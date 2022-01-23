@@ -107,31 +107,37 @@ const calculateDecimals: (
   price: string
 ) => { amount: number; displayText: string }[] = (price) => {
   const decimalPart = price.split(".")[1];
-  let zeroesCount = 0;
+  let lastNumberPlace = 0;
   for (let i = 0; i < decimalPart.length; i++) {
-    if (decimalPart.charAt(i) !== "0") break;
-    zeroesCount++;
+    if (decimalPart.charAt(i) !== "0") lastNumberPlace = i + 1;
   }
 
-  if (zeroesCount === decimalPart.length) zeroesCount = -1;
+  if (lastNumberPlace === 0) lastNumberPlace = 8;
+  if (lastNumberPlace < 2) lastNumberPlace = 2;
 
   return [
-    { amount: ++zeroesCount, displayText: `${zeroesCount} decimals` },
-    { amount: ++zeroesCount, displayText: `${zeroesCount} decimals` },
-    { amount: ++zeroesCount, displayText: `${zeroesCount} decimals` },
+    {
+      amount: lastNumberPlace - 2,
+      displayText: `${lastNumberPlace - 2} decimals`,
+    },
+    {
+      amount: lastNumberPlace - 1,
+      displayText: `${lastNumberPlace - 1} decimals`,
+    },
+    { amount: lastNumberPlace, displayText: `${lastNumberPlace} decimals` },
   ];
 };
 
 const formatOrdersArray: (
   orders: [string, string][],
-  decimals?: number
+  decimals?: number | undefined
 ) => [string, string][] = (orders, decimals) => {
   const seen: { [key: string]: boolean } = {};
   return orders
     .map((order) => {
       let price: string = order[0];
       const amount: string = parseFloat(order[1]).toString();
-      if (decimals) {
+      if (decimals !== undefined) {
         price = parseFloat(price).toFixed(decimals);
       }
       return [price, amount] as [string, string];

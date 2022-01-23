@@ -3,7 +3,7 @@ import { IExchangeInfoResponseV3 } from "../api/Binance/BinanceRestClient/types"
 import { stringCompareFunctionForDescendingOrder } from "./sortCompares";
 import InvalidTradingPairInPathError from "../errors/InvalidTradingPairInPathError";
 import TradingPairNotFound from "../errors/TradingPairNotFound";
-import { ITradingPair } from "../components/OrderBook/TradingPairSelector";
+import { ITradingPair } from "../components/OrderBookPage/TradingPairSelector";
 
 const isValidTradingPairLabel: (tradingPairLabel: string) => boolean = (
   tradingPairLabel

@@ -6,7 +6,10 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import { BUY_ORDER_TYPE, SELL_ORDER_TYPE } from "../../../../utils/constants";
+import {
+  BUY_ORDER_TYPE,
+  SELL_ORDER_TYPE,
+} from "../../../../../utils/constants";
 
 interface ITableSelectorProps {
   buyAndSellTablesSwitch: string;

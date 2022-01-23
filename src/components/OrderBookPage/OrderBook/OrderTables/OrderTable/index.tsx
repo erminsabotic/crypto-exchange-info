@@ -8,12 +8,12 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { SELL_ORDER_TYPE } from "../../../../utils/constants";
+import { SELL_ORDER_TYPE } from "../../../../../utils/constants";
 import {
   formatOrdersArray,
   mergeOrderArrays,
-} from "../../../../utils/orderArrays";
-import { ITradingPair } from "../../TradingPairSelector";
+} from "../../../../../utils/orderArrays";
+import { ITradingPair } from "../../../TradingPairSelector";
 import { buyTableRowStyles, sellTableRowStyles } from "./styles";
 
 interface IOrderTableProps {
@@ -39,15 +39,8 @@ const OrderTable: FC<IOrderTableProps> = ({
   const [allData, setAllData] = useState<[string, string][]>([]);
 
   useEffect(() => {
-    const formattedData = formatOrdersArray(allData, decimals);
-
-    const mergedData = mergeOrderArrays(
-      displayData,
-      formattedData,
-      type,
-      limit
-    );
-    setDisplayData(mergedData);
+    const formattedAllData = formatOrdersArray(allData, decimals);
+    setDisplayData(formattedAllData.slice(0, limit));
   }, [allData, limit]);
 
   useEffect(() => {
@@ -57,7 +50,9 @@ const OrderTable: FC<IOrderTableProps> = ({
   }, [data]);
 
   useEffect(() => {
+    console.log("BEFORE FORMAT", allData);
     const formattedDisplayData = formatOrdersArray(allData, decimals);
+    console.log("AFTER FORMAT", allData);
     setDisplayData(formattedDisplayData.slice(0, limit));
   }, [decimals]);
 

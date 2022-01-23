@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Homepage from "./components/Homepage";
-import OrderBook from "./components/OrderBook";
-import NotFound from "./components/NotFound";
+import OrderBook from "./components/OrderBookPage";
+import NotFoundPage from "./components/NotFoundPage";
 
 const App: FC = () => {
   return (
@@ -10,7 +10,7 @@ const App: FC = () => {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/order-book/:tradingPair" element={<OrderBook />} />
-        <Route path="/*" element={<NotFound />} />
+        <Route path="/*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

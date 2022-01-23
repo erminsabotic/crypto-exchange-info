@@ -6,7 +6,7 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { TABLE_LIMITS } from "../../../../utils/constants";
+import { TABLE_LIMITS } from "../../../../../utils/constants";
 
 interface ITableLengthSelectorProps {
   tableLimit: number;
