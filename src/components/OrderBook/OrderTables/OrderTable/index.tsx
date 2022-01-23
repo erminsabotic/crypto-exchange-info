@@ -14,6 +14,7 @@ import {
   mergeOrderArrays,
 } from "../../../../utils/orderArrays";
 import { ITradingPair } from "../../TradingPairSelector";
+import { buyTableRowStyles, sellTableRowStyles } from "./styles";
 
 interface IOrderTableProps {
   data: [string, string][];
@@ -30,12 +31,13 @@ const OrderTable: FC<IOrderTableProps> = ({
   type,
   tradingPair,
 }) => {
-  const buyOrSellColor: () => string = () => {
-    return type === SELL_ORDER_TYPE ? "#ffcccb" : "#90ee90";
+  const buyOrSellStyle = () => {
+    return type === SELL_ORDER_TYPE ? sellTableRowStyles : buyTableRowStyles;
   };
   //TODO: CONSIDER ADDING ALL DATA TO HAVE EVERYTHING SET UP WHEN DOING DECIMAL CHANGE
   const [displayData, setDisplayData] = useState<[string, string][]>([]);
   const [allData, setAllData] = useState<[string, string][]>([]);
+
   useEffect(() => {
     const formattedData = formatOrdersArray(allData, decimals);
 
@@ -59,12 +61,20 @@ const OrderTable: FC<IOrderTableProps> = ({
     setDisplayData(formattedDisplayData.slice(0, limit));
   }, [decimals]);
 
+  useEffect(() => {
+    return () => {
+      setAllData([]);
+      setDisplayData([]);
+    };
+  }, [tradingPair]);
+
   return (
     <>
       <TableContainer component={Paper}>
-        <Table aria-label="simple table">
+        <Table size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
+              <TableCell>Nr.</TableCell>
               <TableCell>Price ({tradingPair.quoteAsset})</TableCell>
               <TableCell align="right">
                 Amount ({tradingPair.baseAsset})
@@ -78,9 +88,12 @@ const OrderTable: FC<IOrderTableProps> = ({
                     key={index}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
-                      backgroundColor: buyOrSellColor(),
+                      ...buyOrSellStyle(),
                     }}
                   >
+                    <TableCell component="th" scope="row">
+                      {index + 1}.
+                    </TableCell>
                     <TableCell component="th" scope="row">
                       {row[0]}
                     </TableCell>

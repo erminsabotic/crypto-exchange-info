@@ -1,13 +1,11 @@
 import { FC, useState } from "react";
 import { Container, Grid, Typography } from "@mui/material";
-import { useParams, useNavigate, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 import OrderTables from "./OrderTables";
 import Layout from "../Layout";
 import TradingPairSelector, { ITradingPair } from "./TradingPairSelector";
 
-interface IOrderBookProps {}
-
-const OrderBook: FC<IOrderBookProps> = () => {
+const OrderBook: FC = () => {
   const { tradingPair: tradingPairLabel } = useParams();
   const [tradingPair, setTradingPair] = useState<ITradingPair>();
   const [navigateTo404] = useState<boolean>(false);
@@ -18,13 +16,13 @@ const OrderBook: FC<IOrderBookProps> = () => {
 
   return (
     <Layout>
-      <Container sx={{ padding: "8 0 6 0" }} maxWidth="md">
-        <Typography variant="h2" align="center">
+      <Container maxWidth="md">
+        <Typography sx={{ pt: 8, pb: 5 }} variant="h2" align="center">
           Order Book
         </Typography>
         <Grid container>
           <>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ pb: 4 }}>
               <TradingPairSelector
                 tradingPairLabel={tradingPairLabel}
                 tradingPair={tradingPair}

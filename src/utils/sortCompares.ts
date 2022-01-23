@@ -6,6 +6,7 @@ const stringCompareFunctionForDescendingOrder: (
     return -1;
   }
   if (current > next) {
+    return 1;
   }
   return 0;
 };

@@ -130,15 +130,16 @@ const formatOrdersArray: (
   return orders
     .map((order) => {
       let price: string = order[0];
+      const amount: string = parseFloat(order[1]).toString();
       if (decimals) {
         price = parseFloat(price).toFixed(decimals);
       }
-      return [price, order[1]] as [string, string];
+      return [price, amount] as [string, string];
     })
     .filter((order) => {
-      let priceExists: boolean = true;
+      let priceExists = true;
       const amount = parseFloat(order[1]);
-      if (!seen.hasOwnProperty(order[0])) {
+      if (!Object.prototype.hasOwnProperty.call(seen, order[0])) {
         priceExists = false;
         seen[order[0]] = true;
       }

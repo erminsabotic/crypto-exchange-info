@@ -32,8 +32,7 @@ export interface ITradingPair {
   quoteAsset: string;
 }
 
-//TODO: ADD BETTER ERROR CASE HANDLING SCENARIOS
-const TradingPair: FC<ITradingPairSelectorProps> = ({
+const TradingPairSelector: FC<ITradingPairSelectorProps> = ({
   tradingPairLabel,
   tradingPair,
   setTradingPair,
@@ -86,6 +85,7 @@ const TradingPair: FC<ITradingPairSelectorProps> = ({
   };
 
   if (navigateTo404) {
+    setNavigateTo404(false);
     navigate(`/not-found`);
   }
 
@@ -98,7 +98,7 @@ const TradingPair: FC<ITradingPairSelectorProps> = ({
           isOptionEqualToValue={(option, value) => option.label === value.label}
           getOptionLabel={(option) => option.label}
           defaultValue={autocompleteDefaultValue}
-          sx={{ width: 300 }}
+          sx={{ width: { xs: "100%", md: 300 } }}
           renderInput={(params) => (
             <TextField {...params} label="Trading pair" />
           )}
@@ -109,4 +109,4 @@ const TradingPair: FC<ITradingPairSelectorProps> = ({
   );
 };
 
-export default TradingPair;
+export default TradingPairSelector;

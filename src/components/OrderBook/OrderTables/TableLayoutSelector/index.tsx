@@ -26,7 +26,9 @@ const TableLayoutSelector: FC<ITableSelectorProps> = ({
 
   return (
     <FormControl>
-      <FormLabel id="demo-row-radio-buttons-group-label">Order Book</FormLabel>
+      <FormLabel id="demo-row-radio-buttons-group-label">
+        Switch between tables
+      </FormLabel>
       <RadioGroup
         row
         aria-labelledby="demo-row-radio-buttons-group-label"

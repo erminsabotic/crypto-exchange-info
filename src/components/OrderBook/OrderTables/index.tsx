@@ -36,7 +36,7 @@ const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
     useState<string>("");
   const [webSocket, _setWebSocket] = useState<WebSocket>();
   const [tableLimit, setTableLimit] = useState<number>(TABLE_LIMITS[0].amount);
-  const [decimals, setDecimals] = useState<number>(0);
+  const [decimals, _setDecimals] = useState<number>(0);
   const [tablesData, _setTablesData] = useState<ITablesData>({
     buys: [],
     sells: [],
@@ -44,12 +44,18 @@ const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
   const [decimalOptions, _setDecimalOptions] = useState<IDecimalOption[]>([]);
 
   const tablesDataRef = useRef(tablesData);
+  const decimalsRef = useRef(decimals);
   const decimalOptionsRef = useRef(decimalOptions);
   const webSocketRef = useRef(webSocket);
 
   const setTablesData = (data: ITablesData) => {
     tablesDataRef.current = data;
     _setTablesData(data);
+  };
+
+  const setDecimals = (data: number) => {
+    decimalsRef.current = data;
+    _setDecimals(data);
   };
 
   const setDecimalOptions = (data: IDecimalOption[]) => {
@@ -116,62 +122,10 @@ const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
     return () => webSocketRef.current?.close();
   }, [tradingPair]);
 
-  const buyTable = () => {
-    return (
-      <OrderTable
-        type={BUY_ORDER_TYPE}
-        data={tablesData.buys}
-        decimals={decimals}
-        limit={tableLimit}
-        tradingPair={tradingPair}
-      />
-    );
-  };
-
-  const sellTable = () => {
-    return (
-      <OrderTable
-        type={SELL_ORDER_TYPE}
-        data={tablesData.sells}
-        decimals={decimals}
-        limit={tableLimit}
-        tradingPair={tradingPair}
-      />
-    );
-  };
-
   const shouldDisplayBuyTable: boolean =
     buyAndSellTablesSwitch === BUY_ORDER_TYPE || buyAndSellTablesSwitch === "";
   const shouldDisplaySellTable: boolean =
     buyAndSellTablesSwitch === SELL_ORDER_TYPE || buyAndSellTablesSwitch === "";
-
-  const buyAndSellTables = () => {
-    return (
-      <Grid container>
-        <Grid
-          item
-          md={5}
-          xs={12}
-          style={{ display: shouldDisplayBuyTable ? "block" : "none" }}
-        >
-          {buyTable()}
-        </Grid>
-        <Grid
-          item
-          xs={2}
-          style={{ display: shouldDisplayBuyTable ? "block" : "none" }}
-        />
-        <Grid
-          item
-          md={5}
-          xs={12}
-          style={{ display: shouldDisplaySellTable ? "block" : "none" }}
-        >
-          {sellTable()}
-        </Grid>
-      </Grid>
-    );
-  };
 
   const handleTableLimitChange = (event: SelectChangeEvent<number>) => {
     const tableLimit: number = +event.target.value;
@@ -185,8 +139,8 @@ const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
 
   return (
     <>
-      <Grid container>
-        <Grid item xs={12} md={6}>
+      <Grid container sx={{ pb: 2 }} rowSpacing={{ xs: 2 }}>
+        <Grid item xs={12} md={6} textAlign={{ xs: "center", md: "left" }}>
           <TableLayoutSelector
             buyAndSellTablesSwitch={buyAndSellTablesSwitch}
             setBuyAndSellTablesSwitch={setBuyAndSellTablesSwitch}
@@ -194,7 +148,7 @@ const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
         </Grid>
         <Grid item xs={12} md={6}>
           <Grid container justifyContent={"flex-end"}>
-            <Grid item xs={6} md={4} textAlign={"right"}>
+            <Grid item xs={6} md={4} textAlign={{ xs: "center", md: "right" }}>
               <TableLengthSelector
                 tableLimit={tableLimit}
                 handleTableLimitChange={handleTableLimitChange}
@@ -213,7 +167,44 @@ const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
         </Grid>
       </Grid>
 
-      {buyAndSellTables()}
+      <Grid container sx={{ pb: 5 }}>
+        <Grid
+          item
+          md={5}
+          xs={12}
+          sx={{
+            pb: { xs: 2 },
+            display: shouldDisplayBuyTable ? "block" : "none",
+          }}
+        >
+          <OrderTable
+            type={BUY_ORDER_TYPE}
+            data={tablesData.buys}
+            decimals={decimals}
+            limit={tableLimit}
+            tradingPair={tradingPair}
+          />
+        </Grid>
+        <Grid
+          item
+          xs={2}
+          sx={{ display: shouldDisplayBuyTable ? "block" : "none" }}
+        />
+        <Grid
+          item
+          md={5}
+          xs={12}
+          sx={{ display: shouldDisplaySellTable ? "block" : "none" }}
+        >
+          <OrderTable
+            type={SELL_ORDER_TYPE}
+            data={tablesData.sells}
+            decimals={decimals}
+            limit={tableLimit}
+            tradingPair={tradingPair}
+          />
+        </Grid>
+      </Grid>
     </>
   );
 };

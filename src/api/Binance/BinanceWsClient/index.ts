@@ -2,7 +2,7 @@ import { binanceWsClientV1 } from "../index";
 import { IChannelSettings } from "./types";
 import DepthChannelError from "./Errors/DepthChannelError";
 
-const STREAM: string = "stream";
+const STREAM = "stream";
 
 const getDepthChannelSettings: (symbol: string) => IChannelSettings = (
   symbol
@@ -19,7 +19,7 @@ const subscribeToDepthChannel: (
   try {
     const ws = binanceWsClientV1(STREAM);
 
-    ws.onopen = (event) => {
+    ws.onopen = () => {
       ws.send(JSON.stringify(getDepthChannelSettings(symbol)));
     };
     ws.onmessage = onMessageCallback;

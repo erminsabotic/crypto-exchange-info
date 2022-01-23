@@ -4,11 +4,7 @@ import Homepage from "./components/Homepage";
 import OrderBook from "./components/OrderBook";
 import NotFound from "./components/NotFound";
 
-interface IAppProps {}
-
-const App: FC<IAppProps> = () => {
-  //TODO: MOVE ROUTES TO DIFFERENT FILE
-  //TODO: ADD NotFound PAGE
+const App: FC = () => {
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
