@@ -8,49 +8,54 @@ import React, {
 } from "react";
 import { getExchangeInfo } from "../../../api/Binance/BinanceRestClient";
 import { Autocomplete, TextField } from "@mui/material";
-import { SYMBOL_LABEL_SEPARATOR } from "../../../utils/constants";
-import { ISymbolItem } from "../index";
 import {
-  createTradingPairItemFromTradingPairInPath,
-  findTradingPairInTradingPairs,
-  formatExchangeInfoResponse,
-} from "../../../utils/symbols";
-import {useNavigate} from "react-router-dom";
+  createTradingPairFromTradingPairLabel, findTradingPairInTradingPairs, formatExchangeInfoResponse
+} from "../../../utils/tradingPairs";
+import { useNavigate } from "react-router-dom";
 
-export interface ISymbolSelectorProps {
-  symbolInPath: string;
-  symbol: ISymbolItem | undefined;
-  setSymbol: Dispatch<SetStateAction<ISymbolItem | undefined>>;
+export interface ITradingPairSelectorProps {
+  tradingPairLabel: string;
+  tradingPair: ITradingPair | undefined;
+  setTradingPair: Dispatch<SetStateAction<ITradingPair | undefined>>;
 }
 
 interface IAutocompleteItem {
   label: string;
 }
+
+export interface ITradingPair {
+  label: string;
+  symbol: string;
+  baseAsset: string;
+  quoteAsset: string;
+}
+
 //TODO: ADD BETTER ERROR CASE HANDLING SCENARIOS
-//TODO: RENAME SYMBOL TO TRADING PAIR
-const SymbolSelector: FC<ISymbolSelectorProps> = ({
-  symbolInPath,
-  symbol,
-  setSymbol,
+const TradingPair: FC<ITradingPairSelectorProps> = ({
+  tradingPairLabel,
+  tradingPair,
+  setTradingPair,
 }) => {
-  const [autocompleteDefaultValue, setAutocompleteDefaultValue] = useState<IAutocompleteItem>();
-  const [tradingPairs, setTradingPairs] = useState<ISymbolItem[]>([]);
+  const [autocompleteDefaultValue, setAutocompleteDefaultValue] =
+    useState<IAutocompleteItem>();
+  const [tradingPairs, setTradingPairs] = useState<ITradingPair[]>([]);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [navigateTo404, setNavigateTo404] = useState<boolean>(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const pair = createTradingPairItemFromTradingPairInPath(symbolInPath);
-        const tradingPairs: ISymbolItem[] = formatExchangeInfoResponse(
+        const pair =
+          createTradingPairFromTradingPairLabel(tradingPairLabel);
+        const tradingPairs: ITradingPair[] = formatExchangeInfoResponse(
           await getExchangeInfo()
         );
 
         if (findTradingPairInTradingPairs(pair, tradingPairs)) {
           setTradingPairs(tradingPairs);
-          setSymbol(pair);
-          setAutocompleteDefaultValue({ label: pair.label })
+          setTradingPair(pair);
+          setAutocompleteDefaultValue({ label: pair.label });
         }
       } catch (e) {
         setNavigateTo404(true);
@@ -60,11 +65,11 @@ const SymbolSelector: FC<ISymbolSelectorProps> = ({
   }, []);
 
   useEffect(() => {
-    if(refresh) {
+    if (refresh) {
       setRefresh(!refresh);
-      navigate(`/order-book/${symbol?.label}`);
+      navigate(`/order-book/${tradingPair?.label}`);
     }
-  }, [refresh])
+  }, [refresh]);
 
   const handleChange = (
     event: SyntheticEvent<Element, Event>,
@@ -73,7 +78,7 @@ const SymbolSelector: FC<ISymbolSelectorProps> = ({
     if (newValue) {
       const option = tradingPairs.find(({ label }) => label === newValue.label);
       if (option) {
-        setSymbol(option);
+        setTradingPair(option);
         setRefresh(true);
       }
     }
@@ -101,4 +106,4 @@ const SymbolSelector: FC<ISymbolSelectorProps> = ({
   );
 };
 
-export default SymbolSelector;
+export default TradingPair;

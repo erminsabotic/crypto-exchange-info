@@ -8,19 +8,19 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { ISymbolItem } from "../../index";
 import { SELL_ORDER_TYPE } from "../../../../utils/constants";
 import {
   formatOrdersArray,
   mergeOrderArrays,
 } from "../../../../utils/orderArrays";
+import { ITradingPair } from "../../TradingPairSelector";
 
 interface IOrderTableProps {
   data: [string, string][];
   decimals: number;
   limit: number;
   type: string;
-  symbol: ISymbolItem;
+  tradingPair: ITradingPair;
 }
 
 const OrderTable: FC<IOrderTableProps> = ({
@@ -28,7 +28,7 @@ const OrderTable: FC<IOrderTableProps> = ({
   decimals,
   limit,
   type,
-  symbol,
+  tradingPair,
 }) => {
   const buyOrSellColor: () => string = () => {
     return type === SELL_ORDER_TYPE ? "#ffcccb" : "#90ee90";
@@ -50,13 +50,13 @@ const OrderTable: FC<IOrderTableProps> = ({
 
   useEffect(() => {
     const formattedData = formatOrdersArray(data);
-    const mergedArray = mergeOrderArrays(allData, formattedData, type, 100)
-    setAllData(mergedArray)
-  }, [data])
+    const mergedArray = mergeOrderArrays(allData, formattedData, type, 100);
+    setAllData(mergedArray);
+  }, [data]);
 
   useEffect(() => {
     const formattedDisplayData = formatOrdersArray(allData, decimals);
-    setDisplayData(formattedDisplayData.slice(0,limit));
+    setDisplayData(formattedDisplayData.slice(0, limit));
   }, [decimals]);
 
   return (
@@ -65,8 +65,8 @@ const OrderTable: FC<IOrderTableProps> = ({
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Price ({symbol.quoteAsset})</TableCell>
-              <TableCell align="right">Amount ({symbol.baseAsset})</TableCell>
+              <TableCell>Price ({tradingPair.quoteAsset})</TableCell>
+              <TableCell align="right">Amount ({tradingPair.baseAsset})</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

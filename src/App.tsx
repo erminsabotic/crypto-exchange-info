@@ -12,7 +12,7 @@ const App: FC<IAppProps> = () => {
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/order-book/:symbol" element={<OrderBook />} />
+        <Route path="/order-book/:tradingPair" element={<OrderBook />} />
       </Routes>
     </BrowserRouter>
   );

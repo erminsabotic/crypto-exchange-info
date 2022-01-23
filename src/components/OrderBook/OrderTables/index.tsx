@@ -8,16 +8,16 @@ import { getDepth } from "../../../api/Binance/BinanceRestClient";
 import TableLayoutSelector from "./TableLayoutSelector";
 import TableLengthSelector from "./TableLengthSelector";
 import TableDecimalsSelector from "./TableDecimalsSelector";
-import { ISymbolItem } from "../index";
 import {
   BUY_ORDER_TYPE,
   SELL_ORDER_TYPE,
   TABLE_LIMITS,
 } from "../../../utils/constants";
 import { calculateDecimals } from "../../../utils/orderArrays";
+import {ITradingPair} from "../TradingPairSelector";
 
 interface IOrderTablesProps {
-  symbol: ISymbolItem;
+  tradingPair: ITradingPair;
 }
 
 interface ITablesData {
@@ -31,7 +31,7 @@ interface IDecimalOption {
 }
 const INITIAL_DEPTH_DATA_LIMIT = 1000;
 
-const OrderTables: FC<IOrderTablesProps> = ({ symbol }) => {
+const OrderTables: FC<IOrderTablesProps> = ({ tradingPair }) => {
   const [buyAndSellTablesSwitch, setBuyAndSellTablesSwitch] =
     useState<string>("");
   const [webSocket, setWebSocket] = useState<WebSocket>();
@@ -109,7 +109,10 @@ const OrderTables: FC<IOrderTablesProps> = ({ symbol }) => {
           resetStateToDefaultValues();
         }
 
-        const initialData = await getDepth(symbol.symbol, INITIAL_DEPTH_DATA_LIMIT);
+        const initialData = await getDepth(
+            tradingPair.symbol,
+          INITIAL_DEPTH_DATA_LIMIT
+        );
         const decimalsArray = calculateDecimals(initialData.asks[0][0]);
 
         ReactDOM.unstable_batchedUpdates(() => {
@@ -118,7 +121,7 @@ const OrderTables: FC<IOrderTablesProps> = ({ symbol }) => {
         });
         await updateBuyAndSellOrderData(initialData.bids, initialData.asks);
         const ws = await subscribeToDepthChannel(
-          symbol.symbol.toLowerCase(),
+            tradingPair.symbol.toLowerCase(),
           depthChannelOnMessageEvent
         );
         setWebSocket(ws);
@@ -128,7 +131,7 @@ const OrderTables: FC<IOrderTablesProps> = ({ symbol }) => {
     };
 
     fetchData();
-  }, [symbol]);
+  }, [tradingPair]);
 
   const buyTable = () => {
     return (
@@ -137,7 +140,7 @@ const OrderTables: FC<IOrderTablesProps> = ({ symbol }) => {
         data={tablesData.buys}
         decimals={decimals}
         limit={tableLimit}
-        symbol={symbol}
+        tradingPair={tradingPair}
       />
     );
   };
@@ -149,7 +152,7 @@ const OrderTables: FC<IOrderTablesProps> = ({ symbol }) => {
         data={tablesData.sells}
         decimals={decimals}
         limit={tableLimit}
-        symbol={symbol}
+        tradingPair={tradingPair}
       />
     );
   };
@@ -170,7 +173,7 @@ const OrderTables: FC<IOrderTablesProps> = ({ symbol }) => {
         >
           {buyTable()}
         </Grid>
-        <Grid item xs={2} />
+        <Grid item xs={2} style={{ display: shouldDisplayBuyTable ? "block" : "none" }}/>
         <Grid
           item
           md={5}
