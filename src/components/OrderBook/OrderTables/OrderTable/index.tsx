@@ -35,8 +35,10 @@ const OrderTable: FC<IOrderTableProps> = ({
   };
   //TODO: CONSIDER ADDING ALL DATA TO HAVE EVERYTHING SET UP WHEN DOING DECIMAL CHANGE
   const [displayData, setDisplayData] = useState<[string, string][]>([]);
+  const [allData, setAllData] = useState<[string, string][]>([]);
   useEffect(() => {
-    const formattedData = formatOrdersArray(data, decimals);
+    const formattedData = formatOrdersArray(allData, decimals);
+
     const mergedData = mergeOrderArrays(
       displayData,
       formattedData,
@@ -44,11 +46,17 @@ const OrderTable: FC<IOrderTableProps> = ({
       limit
     );
     setDisplayData(mergedData);
-  }, [data, limit]);
+  }, [allData, limit]);
 
   useEffect(() => {
-    const formattedDisplayData = formatOrdersArray(displayData, decimals);
-    setDisplayData(formattedDisplayData);
+    const formattedData = formatOrdersArray(data);
+    const mergedArray = mergeOrderArrays(allData, formattedData, type, 100)
+    setAllData(mergedArray)
+  }, [data])
+
+  useEffect(() => {
+    const formattedDisplayData = formatOrdersArray(allData, decimals);
+    setDisplayData(formattedDisplayData.slice(0,limit));
   }, [decimals]);
 
   return (

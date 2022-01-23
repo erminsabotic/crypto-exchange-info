@@ -6,18 +6,20 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { IExchangeInfoSymbol } from "../../../api/Binance/BinanceRestClient/types";
 import { getExchangeInfo } from "../../../api/Binance/BinanceRestClient";
 import { Autocomplete, TextField } from "@mui/material";
-import { stringCompareFunctionForDescendingOrder } from "../../../utils/sortCompares";
-import {
-  SYMBOL_LABEL_SEPARATOR,
-  TRADING_SYMBOL_STATUS,
-} from "../../../utils/constants";
+import { SYMBOL_LABEL_SEPARATOR } from "../../../utils/constants";
 import { ISymbolItem } from "../index";
+import {
+  createTradingPairItemFromTradingPairInPath,
+  findTradingPairInTradingPairs,
+  formatExchangeInfoResponse,
+} from "../../../utils/symbols";
+import {useNavigate} from "react-router-dom";
 
-interface ISymbolSelectorProps {
-  symbol: ISymbolItem;
+export interface ISymbolSelectorProps {
+  symbolInPath: string;
+  symbol: ISymbolItem | undefined;
   setSymbol: Dispatch<SetStateAction<ISymbolItem | undefined>>;
 }
 
@@ -26,71 +28,68 @@ interface IAutocompleteItem {
 }
 //TODO: ADD BETTER ERROR CASE HANDLING SCENARIOS
 //TODO: RENAME SYMBOL TO TRADING PAIR
-const SymbolSelector: FC<ISymbolSelectorProps> = ({ symbol, setSymbol }) => {
-  const [exchangeInfo, setExchangeInfo] = useState<
-    IExchangeInfoSymbol[] | undefined
-  >(undefined);
-  const [autocompleteDefaultValue] = useState<IAutocompleteItem>({
-    label: `${symbol.baseAsset}${SYMBOL_LABEL_SEPARATOR}${symbol.quoteAsset}`,
-  });
+const SymbolSelector: FC<ISymbolSelectorProps> = ({
+  symbolInPath,
+  symbol,
+  setSymbol,
+}) => {
+  const [autocompleteDefaultValue, setAutocompleteDefaultValue] = useState<IAutocompleteItem>();
+  const [tradingPairs, setTradingPairs] = useState<ISymbolItem[]>([]);
+  const [refresh, setRefresh] = useState<boolean>(false);
+  const [navigateTo404, setNavigateTo404] = useState<boolean>(false);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getExchangeInfo();
-        setExchangeInfo(
-          response.symbols
-            .filter(({ status }) => status === TRADING_SYMBOL_STATUS)
-            .sort((current, next) =>
-              stringCompareFunctionForDescendingOrder(
-                current.symbol,
-                next.symbol
-              )
-            )
+        const pair = createTradingPairItemFromTradingPairInPath(symbolInPath);
+        const tradingPairs: ISymbolItem[] = formatExchangeInfoResponse(
+          await getExchangeInfo()
         );
-        console.log(response);
+
+        if (findTradingPairInTradingPairs(pair, tradingPairs)) {
+          setTradingPairs(tradingPairs);
+          setSymbol(pair);
+          setAutocompleteDefaultValue({ label: pair.label })
+        }
       } catch (e) {
-        console.log("error occurred");
+        setNavigateTo404(true);
       }
     };
-
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if(refresh) {
+      setRefresh(!refresh);
+      navigate(`/order-book/${symbol?.label}`);
+    }
+  }, [refresh])
 
   const handleChange = (
     event: SyntheticEvent<Element, Event>,
     newValue: { label: string } | null
   ) => {
     if (newValue) {
-      const option = autocompleteOptions.find(
-        ({ label }) => label === newValue.label
-      );
+      const option = tradingPairs.find(({ label }) => label === newValue.label);
       if (option) {
-        setSymbol({
-          label: `${option.baseAsset}${SYMBOL_LABEL_SEPARATOR}${option.quoteAsset}`,
-          symbol: option.symbol,
-          baseAsset: option.baseAsset,
-          quoteAsset: option.quoteAsset,
-        });
+        setSymbol(option);
+        setRefresh(true);
       }
     }
   };
-  const autocompleteOptions = exchangeInfo
-    ? exchangeInfo.map(({ baseAsset, quoteAsset, status, symbol }) => ({
-        label: `${baseAsset}${SYMBOL_LABEL_SEPARATOR}${quoteAsset}`,
-        symbol,
-        quoteAsset,
-        baseAsset,
-        status,
-      }))
-    : [];
+
+  if (navigateTo404) {
+    navigate(`/not-found`);
+  }
 
   return (
     <>
-      {autocompleteOptions.length ? (
+      {autocompleteDefaultValue && tradingPairs.length ? (
         <Autocomplete
           disablePortal
-          options={autocompleteOptions}
+          options={tradingPairs}
+          isOptionEqualToValue={(option, value) => option.label === value.label}
           getOptionLabel={(option) => option.label}
           defaultValue={autocompleteDefaultValue}
           sx={{ width: 300 }}
