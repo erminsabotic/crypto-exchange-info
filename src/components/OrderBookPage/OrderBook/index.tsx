@@ -79,7 +79,7 @@ const OrderBook: FC<IOrderTablesProps> = ({ tradingPair }) => {
           tradingPair={tradingPair}
         />
       </Grid>
-      {displayTables && tablesData && decimals ? (
+      {displayTables && tablesData && decimals !== undefined ? (
         <OrderTables
           buyAndSellTablesSwitch={buyAndSellTablesSwitch}
           tradingPair={tradingPair}
