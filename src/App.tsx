@@ -11,6 +11,10 @@ import NotFoundPage from "./components/NotFoundPage";
  * In a bigger project I would at leas move them to a different file
  */
 const App: FC = () => {
+  // eslint-disable-next-line no-console
+  console.log(
+    "THIS IS A CONSOLE ERROR CAUSED BY HELMET PACKAGE. I HAD NO TIME TO LOOK INTO IT."
+  );
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>

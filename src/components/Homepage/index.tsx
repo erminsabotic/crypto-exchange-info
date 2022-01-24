@@ -40,9 +40,9 @@ const Homepage: FC = () => {
               </Link>
             </ListItem>
             <ListItem>
-              <Link href={"/order-book/BTC_ETH"}>
+              <Link href={"/order-book/BTC_EUR"}>
                 {" "}
-                To see BTC/ETH order book
+                To see BTC/EUR order book
               </Link>
             </ListItem>
             <ListItem>
