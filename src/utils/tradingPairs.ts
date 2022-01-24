@@ -1,4 +1,8 @@
-import { TRADING_PAIR_LABEL_SEPARATOR, TRADING_PAIR_STATUS } from "./constants";
+import {
+  TRADING_PAIR_LABEL_SEPARATOR,
+  TRADING_PAIR_PRICE_FILTER_TYPE,
+  TRADING_PAIR_STATUS,
+} from "./constants";
 import { IExchangeInfoResponseV3 } from "../api/Binance/BinanceRestClient/types";
 import { stringCompareFunctionForDescendingOrder } from "./sortCompares";
 import InvalidTradingPairInPathError from "../errors/InvalidTradingPairInPathError";
@@ -29,6 +33,7 @@ const createTradingPairFromTradingPairLabel: (
     symbol: `${tradingPairInPathParts[0]}${tradingPairInPathParts[1]}`,
     baseAsset: tradingPairInPathParts[0],
     quoteAsset: tradingPairInPathParts[1],
+    tickSize: undefined,
   };
 };
 
@@ -57,12 +62,17 @@ const formatExchangeInfoResponse: (
     .sort((current, next) =>
       stringCompareFunctionForDescendingOrder(current.symbol, next.symbol)
     )
-    .map(({ symbol, baseAsset, quoteAsset }) => {
+    .map(({ symbol, baseAsset, quoteAsset, filters }) => {
+      const filter = filters.find(
+        ({ filterType }) => filterType === TRADING_PAIR_PRICE_FILTER_TYPE
+      );
+
       return {
         label: `${baseAsset}${TRADING_PAIR_LABEL_SEPARATOR}${quoteAsset}`,
         symbol: symbol,
         baseAsset: baseAsset,
         quoteAsset: quoteAsset,
+        tickSize: filter?.tickSize,
       };
     });
 };

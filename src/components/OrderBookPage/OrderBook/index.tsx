@@ -2,13 +2,12 @@ import { ITradingPair } from "../TradingPairSelector";
 import { FC, useEffect, useState } from "react";
 import { TABLE_LIMITS } from "../../../utils/constants";
 import { getDepth } from "../../../api/Binance/BinanceRestClient";
-import { calculateDecimals } from "../../../utils/orderArrays";
-import ReactDOM from "react-dom";
 import { Grid, SelectChangeEvent } from "@mui/material";
 import TableLayoutSelector from "./OrderTables/TableLayoutSelector";
 import TableLengthSelector from "./OrderTables/TableLengthSelector";
 import TableDecimalsSelector from "./OrderTables/TableDecimalsSelector";
 import OrderTables from "./OrderTables";
+import { useNavigate } from "react-router-dom";
 
 interface IOrderTablesProps {
   tradingPair: ITradingPair;
@@ -19,10 +18,6 @@ export interface ITablesData {
   sells: [string, string][];
 }
 
-interface IDecimalOption {
-  amount: number;
-  displayText: string;
-}
 const INITIAL_DEPTH_DATA_LIMIT = 1000;
 
 const OrderBook: FC<IOrderTablesProps> = ({ tradingPair }) => {
@@ -30,9 +25,10 @@ const OrderBook: FC<IOrderTablesProps> = ({ tradingPair }) => {
     useState<string>("");
   const [tablesData, setTablesData] = useState<ITablesData>();
   const [tableLimit, setTableLimit] = useState<number>(TABLE_LIMITS[0].amount);
-  const [decimals, setDecimals] = useState<number>(0);
-  const [decimalOptions, setDecimalOptions] = useState<IDecimalOption[]>([]);
+  const [decimals, setDecimals] = useState<number>();
   const [displayTables, setDisplayTables] = useState<boolean>(false);
+  const [navigateTo404, setNavigateTo404] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,19 +37,13 @@ const OrderBook: FC<IOrderTablesProps> = ({ tradingPair }) => {
           tradingPair.symbol,
           INITIAL_DEPTH_DATA_LIMIT
         );
-        const decimalsArray = calculateDecimals(initialData.asks[0][0]);
-
-        ReactDOM.unstable_batchedUpdates(() => {
-          setDecimalOptions(decimalsArray);
-          setDecimals(decimalsArray[2].amount);
-        });
         setTablesData({
           buys: initialData.bids,
           sells: initialData.asks,
         });
         setDisplayTables(true);
       } catch (e) {
-        console.log("error occurred");
+        setNavigateTo404(true);
       }
     };
 
@@ -71,7 +61,11 @@ const OrderBook: FC<IOrderTablesProps> = ({ tradingPair }) => {
     const decimals: number = +event.target.value;
     setDecimals(decimals);
   };
-  console.log(displayTables);
+
+  if (navigateTo404) {
+    navigate("/not-found");
+  }
+
   return (
     <>
       <Grid container sx={{ pb: 2 }} rowSpacing={{ xs: 2 }}>
@@ -90,18 +84,17 @@ const OrderBook: FC<IOrderTablesProps> = ({ tradingPair }) => {
               />
             </Grid>
             <Grid item xs={6} md={4} textAlign={"right"}>
-              {decimalOptions.length ? (
-                <TableDecimalsSelector
-                  decimals={decimals}
-                  decimalOptions={decimalOptions}
-                  handleDecimalsChange={handleDecimalsChange}
-                />
-              ) : null}
+              <TableDecimalsSelector
+                decimals={decimals}
+                setDecimals={setDecimals}
+                tradingPair={tradingPair}
+                handleDecimalsChange={handleDecimalsChange}
+              />
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-      {displayTables && tablesData ? (
+      {displayTables && tablesData && decimals ? (
         <OrderTables
           buyAndSellTablesSwitch={buyAndSellTablesSwitch}
           tradingPair={tradingPair}

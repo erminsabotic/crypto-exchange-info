@@ -8,6 +8,12 @@ interface IExchangeInfoSymbol {
   status: string;
   baseAsset: string;
   quoteAsset: string;
+  filters: Filter[];
+}
+
+interface Filter {
+  filterType: string;
+  tickSize?: string;
 }
 
 interface IDepthResponseV1 {

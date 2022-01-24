@@ -34,7 +34,6 @@ const OrderTable: FC<IOrderTableProps> = ({
   const buyOrSellStyle = () => {
     return type === SELL_ORDER_TYPE ? sellTableRowStyles : buyTableRowStyles;
   };
-  //TODO: CONSIDER ADDING ALL DATA TO HAVE EVERYTHING SET UP WHEN DOING DECIMAL CHANGE
   const [displayData, setDisplayData] = useState<[string, string][]>([]);
   const [allData, setAllData] = useState<[string, string][]>([]);
 
@@ -45,15 +44,14 @@ const OrderTable: FC<IOrderTableProps> = ({
 
   useEffect(() => {
     const formattedData = formatOrdersArray(data);
-    const mergedArray = mergeOrderArrays(allData, formattedData, type, 100);
-    setAllData(mergedArray);
+    const mergedArray = mergeOrderArrays(allData, formattedData, type);
+    const formattedMergedArray = formatOrdersArray(mergedArray);
+    setAllData(formattedMergedArray.slice(0, 100));
   }, [data]);
 
   useEffect(() => {
-    console.log("BEFORE FORMAT", allData);
-    const formattedDisplayData = formatOrdersArray(allData, decimals);
-    console.log("AFTER FORMAT", allData);
-    setDisplayData(formattedDisplayData.slice(0, limit));
+    const formattedAllData = formatOrdersArray(allData, decimals);
+    setDisplayData(formattedAllData.slice(0, limit));
   }, [decimals]);
 
   useEffect(() => {
@@ -64,44 +62,42 @@ const OrderTable: FC<IOrderTableProps> = ({
   }, [tradingPair]);
 
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Nr.</TableCell>
-              <TableCell>Price ({tradingPair.quoteAsset})</TableCell>
-              <TableCell align="right">
-                Amount ({tradingPair.baseAsset})
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {displayData
-              ? displayData.map((row, index) => (
-                  <TableRow
-                    key={index}
-                    sx={{
-                      "&:last-child td, &:last-child th": { border: 0 },
-                      ...buyOrSellStyle(),
-                    }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {index + 1}.
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {row[0]}
-                    </TableCell>
-                    <TableCell component="th" scope="row" align="right">
-                      {row[1]}
-                    </TableCell>
-                  </TableRow>
-                ))
-              : null}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+    <TableContainer component={Paper}>
+      <Table size="small" aria-label="a dense table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Nr.</TableCell>
+            <TableCell>Price ({tradingPair.quoteAsset})</TableCell>
+            <TableCell align="right">
+              Amount ({tradingPair.baseAsset})
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {displayData
+            ? displayData.map((row, index) => (
+                <TableRow
+                  key={index}
+                  sx={{
+                    "&:last-child td, &:last-child th": { border: 0 },
+                    ...buyOrSellStyle(),
+                  }}
+                >
+                  <TableCell component="th" scope="row">
+                    {index + 1}.
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {row[0]}
+                  </TableCell>
+                  <TableCell component="th" scope="row" align="right">
+                    {row[1]}
+                  </TableCell>
+                </TableRow>
+              ))
+            : null}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

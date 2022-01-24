@@ -1,8 +1,15 @@
-# Crypto exchange indo
+# Crypto exchange info
 
-This project is small React SPA used to present Order book from Binance API. It makes use of Binance REST api and WS api to feed and display the data.
+This project is small React SPA used to present Order book from Binance API. It makes use of Binance REST api and WS api to feed and display the data. 
+I attempted to create site that looks and behaves similarly like [Binance's Order Book](https://www.binance.com/en/orderbook/BTC_USDT)
 
 Public preview is available on https://crypto-exchange-info.herokuapp.com/
+
+This project is built by:
+
+- React 17
+- Material UI 5 (MUI 5)
+
 
 ## Available Scripts
 
@@ -41,8 +48,4 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+###

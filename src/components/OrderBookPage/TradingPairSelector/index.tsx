@@ -30,6 +30,7 @@ export interface ITradingPair {
   symbol: string;
   baseAsset: string;
   quoteAsset: string;
+  tickSize: string | undefined;
 }
 
 const TradingPairSelector: FC<ITradingPairSelectorProps> = ({
@@ -51,10 +52,14 @@ const TradingPairSelector: FC<ITradingPairSelectorProps> = ({
         const tradingPairs: ITradingPair[] = formatExchangeInfoResponse(
           await getExchangeInfo()
         );
+        const tradingPairInPairs = findTradingPairInTradingPairs(
+          pair,
+          tradingPairs
+        );
 
-        if (findTradingPairInTradingPairs(pair, tradingPairs)) {
+        if (tradingPairInPairs) {
           setTradingPairs(tradingPairs);
-          setTradingPair(pair);
+          setTradingPair(tradingPairInPairs);
           setAutocompleteDefaultValue({ label: pair.label });
         }
       } catch (e) {

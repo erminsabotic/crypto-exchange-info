@@ -6,6 +6,7 @@ import { IOrderStreamResponse } from "../../../../api/Binance/BinanceWsClient/ty
 import { ITradingPair } from "../../TradingPairSelector";
 import { ITablesData } from "../index";
 import OrderTable from "./OrderTable";
+import { useNavigate } from "react-router-dom";
 
 interface IOrderTablesProps {
   buyAndSellTablesSwitch: string;
@@ -26,6 +27,8 @@ const OrderTables: FC<IOrderTablesProps> = ({
   const [tablesData, _setTablesData] = useState<ITablesData>(initialTablesData);
   const tablesDataRef = useRef(tablesData);
   const webSocketRef = useRef(webSocket);
+  const [navigateTo404, setNavigateTo404] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const setTablesData = (data: ITablesData) => {
     tablesDataRef.current = data;
@@ -55,8 +58,7 @@ const OrderTables: FC<IOrderTablesProps> = ({
         updateBuyAndSellOrderData(json.data.a, json.data.b);
       }
     } catch (err) {
-      console.log(err);
-      // whatever you wish  to do with the err
+      setNavigateTo404(true);
     }
   };
 
@@ -69,7 +71,7 @@ const OrderTables: FC<IOrderTablesProps> = ({
         );
         setWebSocket(ws);
       } catch (e) {
-        console.log("error occurred");
+        setNavigateTo404(true);
       }
     };
 
@@ -83,6 +85,10 @@ const OrderTables: FC<IOrderTablesProps> = ({
     buyAndSellTablesSwitch === SELL_ORDER_TYPE || buyAndSellTablesSwitch === "";
   const shouldDisplayBothTables: boolean =
     shouldDisplayBuyTable && shouldDisplaySellTable;
+
+  if (navigateTo404) {
+    navigate("/not-found");
+  }
 
   return (
     <Grid

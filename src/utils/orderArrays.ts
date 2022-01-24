@@ -1,14 +1,11 @@
+import { IDecimalOption } from "../components/OrderBookPage/OrderBook/OrderTables/TableDecimalsSelector";
+
 const mergeOrderArrays: (
   currentOrderData: [string, string][],
   newOrderData: [string, string][],
   type: string,
   limit?: number
-) => [string, string][] = (
-  currentOrderData,
-  newOrderData,
-  type,
-  limit = 100
-) => {
+) => [string, string][] = (currentOrderData, newOrderData, type) => {
   let [currentDataCounter, newDataCounter, mergedDataCounter] = [0, 0, 0];
   const mergedOrderData: [string, string][] = [];
 
@@ -80,7 +77,7 @@ const mergeOrderArrays: (
     newDataCounter++;
   }
 
-  return mergedOrderData.slice(0, limit);
+  return mergedOrderData;
 };
 
 const shouldMergeByBuyOrSellType: (
@@ -103,28 +100,31 @@ const shouldAddToMergedArray: (
   mergedArray.length === 0 ||
   mergedArray[mergedArrayCounter - 1][0] !== newEntryPrice;
 
-const calculateDecimals: (
-  price: string
-) => { amount: number; displayText: string }[] = (price) => {
-  const decimalPart = price.split(".")[1];
-  let lastNumberPlace = 0;
-  for (let i = 0; i < decimalPart.length; i++) {
-    if (decimalPart.charAt(i) !== "0") lastNumberPlace = i + 1;
+const calculateDecimals: (tickSize: string) => IDecimalOption[] = (
+  tickSize
+) => {
+  let decimals = 8;
+  const tickSizeDecimalPart = tickSize.split(".")[1];
+
+  for (let i = 0; i < tickSizeDecimalPart.length; i++) {
+    if (tickSizeDecimalPart.charAt(i) !== "0") {
+      decimals = i + 1;
+      break;
+    }
   }
 
-  if (lastNumberPlace === 0) lastNumberPlace = 8;
-  if (lastNumberPlace < 2) lastNumberPlace = 2;
+  if (decimals < 2) decimals = 2;
 
   return [
     {
-      amount: lastNumberPlace - 2,
-      displayText: `${lastNumberPlace - 2} decimals`,
+      amount: decimals - 2,
+      displayText: `${decimals - 2} decimals`,
     },
     {
-      amount: lastNumberPlace - 1,
-      displayText: `${lastNumberPlace - 1} decimals`,
+      amount: decimals - 1,
+      displayText: `${decimals - 1} decimals`,
     },
-    { amount: lastNumberPlace, displayText: `${lastNumberPlace} decimals` },
+    { amount: decimals, displayText: `${decimals} decimals` },
   ];
 };
 
