@@ -1,4 +1,4 @@
-# Crypto exchange info
+# Crypto exchange info 💱
 
 This project is small React SPA used to present Order book from Binance API. It makes use of Binance REST api and WS api to feed and display the data. 
 I attempted to create site that looks and behaves similarly like [Binance's Order Book](https://www.binance.com/en/orderbook/BTC_USDT)
@@ -9,6 +9,10 @@ This project is built by:
 
 - React 17
 - Material UI 5 (MUI 5)
+- React router
+- Binance's public API's (REST and WS)
+
+Website is using Heroku free web hosting 🚀
 
 
 ## Available Scripts
@@ -48,4 +52,22 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-###
+### `npm run lint`
+
+Lints the application code with eslint. Config can be found in ./eslintrc
+
+### `npm run lint --fix`
+
+Lints the application code with eslint and fixes issues along the way. Config can be found in ./eslintrc
+
+## How to run
+
+1. Clone this repo
+2. Run `npm install` or `yarn install`
+3. Run `npm run start` or `yarn start`
+
+##What would I do with extra time
+
+- Write some tests
+- Add storybook for component preview
+- Create nicer looking UI
