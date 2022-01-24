@@ -15,6 +15,11 @@ This project is built by:
 
 Website is using Heroku free web hosting 🚀
 
+NOTE: While I tried to mimic behavior of the Binance order book in some cases tables do not behave in the same manner, for example when it comes to
+trading pairs like BTC_USDT which have a lot of traffic. They must be doing some complete data refresh on these big traffic combinations
+and since I couldn't figure out when or why they do it I just lef the table to update itself. It can appear that tables are frozen,
+but they are actually updating, it just so happens that no new data fits the criteria for display.
+
 
 ## Available Scripts
 
