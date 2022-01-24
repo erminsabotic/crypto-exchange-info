@@ -1,6 +1,8 @@
-# Getting Started with Create React App
+# Crypto exchange indo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is small React SPA used to present Order book from Binance API. It makes use of Binance REST api and WS api to feed and display the data.
+
+Public preview is available on https://crypto-exchange-info.herokuapp.com/
 
 ## Available Scripts
 
