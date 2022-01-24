@@ -6,6 +6,12 @@ interface ILayoutProps {
   children: ReactNode;
 }
 
+/**
+ * Layout component for the application
+ * Sets up simple layout with header on top and main content below
+ *
+ * @param children
+ */
 const Layout: FC<ILayoutProps> = ({ children }) => {
   return (
     <>

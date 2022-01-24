@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 import {
   FormControl,
   InputLabel,
@@ -8,15 +8,25 @@ import {
 } from "@mui/material";
 import { TABLE_LIMITS } from "../../../../../utils/constants";
 
-interface ITableLengthSelectorProps {
+interface ITableLimitSelectorProps {
   tableLimit: number;
-  handleTableLimitChange: (event: SelectChangeEvent<number>) => void;
+  setTableLimit: Dispatch<SetStateAction<number>>;
 }
 
-const TableLengthSelector: FC<ITableLengthSelectorProps> = ({
+/**
+ * Used to set table limit for the order table
+ *
+ * @param tableLimit
+ * @param setTableLimit
+ */
+const TableLimitSelector: FC<ITableLimitSelectorProps> = ({
   tableLimit,
-  handleTableLimitChange,
+  setTableLimit,
 }) => {
+  const handleTableLimitChange = (event: SelectChangeEvent<number>) => {
+    const tableLimit: number = +event.target.value;
+    setTableLimit(tableLimit);
+  };
   return (
     <FormControl>
       <InputLabel id="table-limit-label">Table limit</InputLabel>
@@ -39,4 +49,4 @@ const TableLengthSelector: FC<ITableLengthSelectorProps> = ({
   );
 };
 
-export default TableLengthSelector;
+export default TableLimitSelector;

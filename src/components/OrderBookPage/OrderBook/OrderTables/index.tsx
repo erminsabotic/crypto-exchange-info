@@ -16,6 +16,16 @@ interface IOrderTablesProps {
   initialTablesData: ITablesData;
 }
 
+/**
+ * Composite component for order tables
+ * Communicates with WS and propagates data to buy/sell tables
+ *
+ * @param buyAndSellTablesSwitch
+ * @param tradingPair
+ * @param decimals
+ * @param tableLimit
+ * @param initialTablesData
+ */
 const OrderTables: FC<IOrderTablesProps> = ({
   buyAndSellTablesSwitch,
   tradingPair,

@@ -13,7 +13,6 @@ interface ITableDecimalsSelectorProps {
   decimals: number | undefined;
   setDecimals: Dispatch<SetStateAction<number | undefined>>;
   tradingPair: ITradingPair;
-  handleDecimalsChange: (event: SelectChangeEvent<number>) => void;
 }
 
 export interface IDecimalOption {
@@ -21,11 +20,17 @@ export interface IDecimalOption {
   displayText: string;
 }
 
+/**
+ * Used to set decimals for the order table
+ *
+ * @param decimals
+ * @param setDecimals
+ * @param tradingPair
+ */
 const TableDecimalsSelector: FC<ITableDecimalsSelectorProps> = ({
   decimals,
   setDecimals,
   tradingPair,
-  handleDecimalsChange,
 }) => {
   const [decimalOptions, setDecimalOptions] = useState<IDecimalOption[]>([]);
 
@@ -34,6 +39,11 @@ const TableDecimalsSelector: FC<ITableDecimalsSelectorProps> = ({
     setDecimalOptions(decimalsArray);
     setDecimals(decimalsArray[2].amount);
   }, [tradingPair]);
+
+  const handleDecimalsChange = (event: SelectChangeEvent<number>) => {
+    const decimals: number = +event.target.value;
+    setDecimals(decimals);
+  };
 
   return (
     <FormControl>

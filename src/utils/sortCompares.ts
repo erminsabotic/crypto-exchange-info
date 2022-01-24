@@ -1,3 +1,9 @@
+/**
+ * Used for string sorting comparison
+ *
+ * @param current
+ * @param next
+ */
 const stringCompareFunctionForDescendingOrder: (
   current: string,
   next: string

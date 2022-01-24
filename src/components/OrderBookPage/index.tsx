@@ -5,6 +5,11 @@ import Layout from "../Layout";
 import TradingPairSelector, { ITradingPair } from "./TradingPairSelector";
 import OrderBook from "./OrderBook";
 
+/**
+ * Composite component for order books page.
+ *
+ * Used to propagate trading pair further down the structure and to parse URL tradingPairLabel parameter
+ */
 const OrderBookPage: FC = () => {
   const { tradingPair: tradingPairLabel } = useParams();
   const [tradingPair, setTradingPair] = useState<ITradingPair>();

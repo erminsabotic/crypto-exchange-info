@@ -1,5 +1,14 @@
-import { IDecimalOption } from "../components/OrderBookPage/OrderBook/OrderTables/TableDecimalsSelector";
+import { IDecimalOption } from "../components/OrderBookPage/OrderBook/OrderTableHeader/TableDecimalsSelector";
+import { BUY_ORDER_TYPE } from "./constants";
 
+/**
+ * Merges 2 order arrays into single sorted array
+ * Uses O(n+m) time algorithm for merging
+ *
+ * @param type
+ * @param currentPrice
+ * @param newPrice
+ */
 const mergeOrderArrays: (
   currentOrderData: [string, string][],
   newOrderData: [string, string][],
@@ -9,6 +18,7 @@ const mergeOrderArrays: (
   let [currentDataCounter, newDataCounter, mergedDataCounter] = [0, 0, 0];
   const mergedOrderData: [string, string][] = [];
 
+  //Merge both arrays until one has no more elements
   while (
     currentDataCounter < currentOrderData.length &&
     newDataCounter < newOrderData.length
@@ -47,6 +57,7 @@ const mergeOrderArrays: (
     }
   }
 
+  //Merge rest of the currentData elements
   while (currentDataCounter < currentOrderData.length) {
     if (
       shouldAddToMergedArray(
@@ -62,6 +73,7 @@ const mergeOrderArrays: (
     currentDataCounter++;
   }
 
+  //Merge rest of the newData elements
   while (newDataCounter < newOrderData.length) {
     if (
       shouldAddToMergedArray(
@@ -80,18 +92,35 @@ const mergeOrderArrays: (
   return mergedOrderData;
 };
 
+/**
+ * Decides whether we should merge by buy type or by sell type
+ *
+ * Buy type must be ordered in decreasing order (highest to lowest)
+ * Sell type must be ordered in increasing order (lowest to highest)
+ *
+ * @param type
+ * @param currentPrice
+ * @param newPrice
+ */
 const shouldMergeByBuyOrSellType: (
   type: string,
   currentPrice: number,
   newPriceL: number
 ) => boolean = (type, currentPrice, newPrice) => {
-  if (type === "buy") {
+  if (type === BUY_ORDER_TYPE) {
     return currentPrice > newPrice;
   }
 
   return currentPrice < newPrice;
 };
 
+/**
+ * Decides whether item should be added to the merge array
+ *
+ * @param mergedArray
+ * @param mergedArrayCounter
+ * @param newEntryPrice
+ */
 const shouldAddToMergedArray: (
   mergedArray: [string, string][],
   mergedArrayCounter: number,
@@ -100,6 +129,14 @@ const shouldAddToMergedArray: (
   mergedArray.length === 0 ||
   mergedArray[mergedArrayCounter - 1][0] !== newEntryPrice;
 
+/**
+ * Returns decimals array used to present decimals in the dropdown
+ * Uses tick size obtained from api to set proper number for decimals
+ * e.g.
+ *  tickSize = 0.00100000
+ *
+ * @param tickSize
+ */
 const calculateDecimals: (tickSize: string) => IDecimalOption[] = (
   tickSize
 ) => {
@@ -128,6 +165,12 @@ const calculateDecimals: (tickSize: string) => IDecimalOption[] = (
   ];
 };
 
+/**
+ * Used to set proper format of the price (in proper decimals) and removes duplicates after performing decimal change
+ *
+ * @param orders
+ * @param decimals
+ */
 const formatOrdersArray: (
   orders: [string, string][],
   decimals?: number | undefined

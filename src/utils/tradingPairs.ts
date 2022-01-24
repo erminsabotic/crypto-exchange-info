@@ -9,12 +9,26 @@ import InvalidTradingPairInPathError from "../errors/InvalidTradingPairInPathErr
 import TradingPairNotFound from "../errors/TradingPairNotFound";
 import { ITradingPair } from "../components/OrderBookPage/TradingPairSelector";
 
+/**
+ * Validation for trading pair label
+ * e.g.
+ *  BTC_USDT - valid
+ *  BTCUSDT - invalid
+ *
+ * @param tradingPairLabel
+ */
 const isValidTradingPairLabel: (tradingPairLabel: string) => boolean = (
   tradingPairLabel
 ) => {
   return tradingPairLabel.split(TRADING_PAIR_LABEL_SEPARATOR).length === 2;
 };
 
+/**
+ * Generates trading pair object from trading pair label
+ *
+ * NOTE: tick size must be obntained from the API
+ * @param tradingPairInPath
+ */
 const createTradingPairFromTradingPairLabel: (
   tradingPairInPath: string
 ) => ITradingPair = (tradingPairInPath) => {
@@ -37,6 +51,12 @@ const createTradingPairFromTradingPairLabel: (
   };
 };
 
+/**
+ * Searches trading pair list to find specified trading pair
+ *
+ * @param tradingPair
+ * @param tradingPairItems
+ */
 const findTradingPairInTradingPairs: (
   tradingPair: ITradingPair,
   tradingPairItems: ITradingPair[]
@@ -54,6 +74,11 @@ const findTradingPairInTradingPairs: (
   return pair;
 };
 
+/**
+ * Formats exchange info response and return list of trading pair objects
+ *
+ * @param symbols
+ */
 const formatExchangeInfoResponse: (
   response: IExchangeInfoResponseV3
 ) => ITradingPair[] = ({ symbols }) => {

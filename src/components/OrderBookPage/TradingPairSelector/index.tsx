@@ -33,6 +33,13 @@ export interface ITradingPair {
   tickSize: string | undefined;
 }
 
+/**
+ * Select for trading pair which describes quote and base asset used for order book.
+ *
+ * @param tradingPairLabel
+ * @param tradingPair
+ * @param setTradingPair
+ */
 const TradingPairSelector: FC<ITradingPairSelectorProps> = ({
   tradingPairLabel,
   tradingPair,

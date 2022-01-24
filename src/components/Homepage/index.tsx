@@ -1,7 +1,10 @@
-import { Box, Grid, Link, List, ListItem, Typography } from "@mui/material";
+import { Grid, Link, List, ListItem, Typography } from "@mui/material";
 import { FC } from "react";
 import Layout from "../Layout";
 
+/**
+ * Small homepage component used to help the user navigate around the website
+ */
 const Homepage: FC = () => {
   return (
     <Layout>

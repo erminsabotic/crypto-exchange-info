@@ -10,6 +10,7 @@ This project is built by:
 - React 17
 - Material UI 5 (MUI 5)
 - React router
+- Typescript
 - Binance's public API's (REST and WS)
 
 Website is using Heroku free web hosting 🚀
@@ -70,4 +71,4 @@ Lints the application code with eslint and fixes issues along the way. Config ca
 
 - Write some tests
 - Add storybook for component preview
-- Create nicer looking UI
+- Add loaders for API data 

@@ -3,6 +3,9 @@ import { AppBar, Toolbar, Typography, Link, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { linkStyle } from "./style";
 
+/**
+ * Header with simple navigation for the app
+ */
 const Header: FC = () => {
   const navigate = useNavigate();
   return (

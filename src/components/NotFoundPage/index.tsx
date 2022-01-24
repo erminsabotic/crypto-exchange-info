@@ -2,6 +2,9 @@ import { FC } from "react";
 import Layout from "../Layout";
 import { Typography } from "@mui/material";
 
+/**
+ * 404 page
+ */
 const NotFoundPage: FC = () => {
   return (
     <Layout>

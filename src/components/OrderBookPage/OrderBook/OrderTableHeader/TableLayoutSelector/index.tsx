@@ -16,6 +16,12 @@ interface ITableSelectorProps {
   setBuyAndSellTablesSwitch: Dispatch<SetStateAction<string>>;
 }
 
+/**
+ * Used to choose between different layouts of the order tables
+ *
+ * @param buyAndSellTablesSwitch
+ * @param setBuyAndSellTablesSwitch
+ */
 const TableLayoutSelector: FC<ITableSelectorProps> = ({
   buyAndSellTablesSwitch,
   setBuyAndSellTablesSwitch,

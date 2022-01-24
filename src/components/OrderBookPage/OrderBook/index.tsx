@@ -2,12 +2,10 @@ import { ITradingPair } from "../TradingPairSelector";
 import { FC, useEffect, useState } from "react";
 import { TABLE_LIMITS } from "../../../utils/constants";
 import { getDepth } from "../../../api/Binance/BinanceRestClient";
-import { Grid, SelectChangeEvent } from "@mui/material";
-import TableLayoutSelector from "./OrderTables/TableLayoutSelector";
-import TableLengthSelector from "./OrderTables/TableLengthSelector";
-import TableDecimalsSelector from "./OrderTables/TableDecimalsSelector";
+import { Grid } from "@mui/material";
 import OrderTables from "./OrderTables";
 import { useNavigate } from "react-router-dom";
+import OrderTableHeader from "./OrderTableHeader";
 
 interface IOrderTablesProps {
   tradingPair: ITradingPair;
@@ -18,8 +16,20 @@ export interface ITablesData {
   sells: [string, string][];
 }
 
+/**
+ * Pulling a lot of data on initial load because data contains a lot of duplicates that need to be removed
+ * Pulls initial data from the depth API
+ */
 const INITIAL_DEPTH_DATA_LIMIT = 1000;
 
+/**
+ * Used as a composite component for order tables an order tables header
+ * Calls depth API to get initial order data
+ *
+ * Passes on different states from the header to the order tables (decimals, tableLimit, initial data)
+ *
+ * @param tradingPair
+ */
 const OrderBook: FC<IOrderTablesProps> = ({ tradingPair }) => {
   const [buyAndSellTablesSwitch, setBuyAndSellTablesSwitch] =
     useState<string>("");
@@ -52,16 +62,6 @@ const OrderBook: FC<IOrderTablesProps> = ({ tradingPair }) => {
     return () => setDisplayTables(false);
   }, [tradingPair]);
 
-  const handleTableLimitChange = (event: SelectChangeEvent<number>) => {
-    const tableLimit: number = +event.target.value;
-    setTableLimit(tableLimit);
-  };
-
-  const handleDecimalsChange = (event: SelectChangeEvent<number>) => {
-    const decimals: number = +event.target.value;
-    setDecimals(decimals);
-  };
-
   if (navigateTo404) {
     navigate("/not-found");
   }
@@ -69,30 +69,15 @@ const OrderBook: FC<IOrderTablesProps> = ({ tradingPair }) => {
   return (
     <>
       <Grid container sx={{ pb: 2 }} rowSpacing={{ xs: 2 }}>
-        <Grid item xs={12} md={6} textAlign={{ xs: "center", md: "left" }}>
-          <TableLayoutSelector
-            buyAndSellTablesSwitch={buyAndSellTablesSwitch}
-            setBuyAndSellTablesSwitch={setBuyAndSellTablesSwitch}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Grid container justifyContent={"flex-end"}>
-            <Grid item xs={6} md={4} textAlign={{ xs: "center", md: "right" }}>
-              <TableLengthSelector
-                tableLimit={tableLimit}
-                handleTableLimitChange={handleTableLimitChange}
-              />
-            </Grid>
-            <Grid item xs={6} md={4} textAlign={"right"}>
-              <TableDecimalsSelector
-                decimals={decimals}
-                setDecimals={setDecimals}
-                tradingPair={tradingPair}
-                handleDecimalsChange={handleDecimalsChange}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
+        <OrderTableHeader
+          buyAndSellTablesSwitch={buyAndSellTablesSwitch}
+          setBuyAndSellTablesSwitch={setBuyAndSellTablesSwitch}
+          tableLimit={tableLimit}
+          setTableLimit={setTableLimit}
+          decimals={decimals}
+          setDecimals={setDecimals}
+          tradingPair={tradingPair}
+        />
       </Grid>
       {displayTables && tablesData && decimals ? (
         <OrderTables

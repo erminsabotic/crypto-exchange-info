@@ -24,6 +24,21 @@ interface IOrderTableProps {
   tradingPair: ITradingPair;
 }
 
+const MAX_TABLE_LIMIT = 100;
+
+/**
+ * Used to display buy/sell table based on type provided
+ * Keeps 2 arrays one for display (displayData) and all data (allData - max 100 elements)
+ *
+ * Constantly updates all data
+ * Display data presents formatted version of allData (sliced and with correct decimal values provided by headers component)
+ *
+ * @param data
+ * @param decimals
+ * @param limit
+ * @param type
+ * @param tradingPair
+ */
 const OrderTable: FC<IOrderTableProps> = ({
   data,
   decimals,
@@ -46,7 +61,7 @@ const OrderTable: FC<IOrderTableProps> = ({
     const formattedData = formatOrdersArray(data);
     const mergedArray = mergeOrderArrays(allData, formattedData, type);
     const formattedMergedArray = formatOrdersArray(mergedArray);
-    setAllData(formattedMergedArray.slice(0, 100));
+    setAllData(formattedMergedArray.slice(0, MAX_TABLE_LIMIT));
   }, [data]);
 
   useEffect(() => {
